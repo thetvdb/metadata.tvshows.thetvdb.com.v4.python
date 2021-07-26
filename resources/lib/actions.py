@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import, unicode_literals
+
+import json
+import os.path
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+import uuid
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+import xbmc
+import xbmcaddon
+import xbmcplugin
+
+from .artwork import get_artworks
+from .episodes import get_episode_details, get_series_episodes
+from .series import get_series_details, search_series
+from .utils import logger
+
+# from .settings import PathSpecificSettings
+# from .utils import create_uuid, log
+
+
+
+# import episodes
+
+# from .artwork import get_artworks
+# from .nfo import get_show_id_from_nfo
+
+ADDON_SETTINGS = xbmcaddon.Addon()
+HANDLE = int(sys.argv[1])
+images_url = 'http://thetvdb.com/banners/'
+
+def run():
+    qs = sys.argv[2][1:]
+    params = dict(urllib.parse.parse_qsl(qs))
+    logger.debug("THE TVDB ADDON")
+    logger.debug(params)
+
+    _action = params.get("action", "")
+    action = urllib.parse.unquote_plus(_action)
+    _settings = params.get("pathSettings", "{}")
+    settings = json.loads(_settings)
+    _title = params.get("title", "")
+    title = urllib.parse.unquote_plus(_title)
+    year = params.get("year", None)
+
+    if 'action' in params:
+        if action == 'find' and title is not None:
+            logger.debug("about to call search series")
+            search_series(title, settings, year)
+        elif action == 'getdetails' and 'url' in params:
+            logger.debug("about to call get series details")
+            get_series_details(
+                urllib.parse.unquote_plus(params["url"]), settings)
+        elif action == 'getepisodelist' and 'url' in params:
+            logger.debug("about to call get series episodes")
+
+            get_series_episodes(
+                urllib.parse.unquote_plus(params["url"]), settings)
+        elif action == 'getepisodedetails' and 'url' in params:
+            logger.debug("about to call get episode details")
+
+            get_episode_details(
+                urllib.parse.unquote_plus(params["url"]), settings)
+        elif action == 'getartwork' and 'id' in params:
+            logger.debug("about to call get artworks")
+            get_artworks(urllib.parse.unquote_plus(
+                params["id"]), images_url, settings)
+    xbmcplugin.endOfDirectory(HANDLE)
