@@ -10,10 +10,8 @@ from . import tvdb
 from .artwork import add_artworks
 from .utils import logger
 
-HANDLE = int(sys.argv[1])
 
-
-def search_series(title, settings, year=None) -> None:
+def search_series(title, settings, handle, year=None) -> None:
     # add the found shows to the list
     logger.debug(f'Searching for TV show "{title}"')
 
@@ -32,35 +30,58 @@ def search_series(title, settings, year=None) -> None:
             'year'] else f"{show['name']} ({show['year']})"
 
         liz = xbmcgui.ListItem(nameAndYear, offscreen=True)
+
         xbmcplugin.addDirectoryItem(
-            handle=HANDLE,
+            handle=handle,
             url=str(show['tvdb_id']),
             listitem=liz,
             isFolder=True
         )
 
 
-def get_series_details(id, settings):
+def get_series_details(id, settings, handle):
     # get the details of the found series
     logger.debug(f'Find info of tvshow with id {id}')
     tvdb_client = tvdb.client(settings)
 
-    show = tvdb_client.get_series_details_api(id, settings)
+    show = tvdb_client.get_series_details_api(id, settings,)
     if not show:
         xbmcplugin.setResolvedUrl(
-            HANDLE, False, xbmcgui.ListItem(offscreen=True))
+            handle, False, xbmcgui.ListItem(offscreen=True))
         return
     liz = xbmcgui.ListItem(show["name"], offscreen=True)
-    liz.setInfo('video',
-                {'title': show["name"],
-                 'tvshowtitle': show["name"],
-                 'plot': show["overview"],
-                 'plotoutline': show["overview"],
-                 'episodeguide': show["id"],
-                 'mediatype': 'tvshow'
-                 })
 
+    year_str = show.get("first_aired", "")
+    year = None
+    if year_str != "":
+        year = int(year.split("-")[0])
+    details = {'title': show["name"],
+                'tvshowtitle': show["name"],
+                'plot': show["overview"],
+                'plotoutline': show["overview"],
+                'episodeguide': show["id"],
+                'mediatype': 'tvshow'
+                }
+    if year:
+        details["year"] = year
+        details["premiered"] = show["first_aired"]
+    logger.debug(details)
+    liz.setInfo('video', details
+  )
+    set_cast(liz, show)
     liz.setUniqueIDs({'tvdb': show["id"]}, 'tvdb')
 
     add_artworks(show, liz)
-    xbmcplugin.setResolvedUrl(handle=HANDLE, succeeded=True, listitem=liz)
+    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
+
+
+def set_cast(liz, show):
+    cast = []
+    for char in show["characters"]:
+        if char["peopleType"] == "Actor":
+            d = {}
+            d["name"] = char["personName"]
+            d["role"] = char["name"]
+            cast.append(d)
+    liz.setCast(cast)
+    return

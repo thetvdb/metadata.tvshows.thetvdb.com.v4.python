@@ -52,23 +52,23 @@ def run():
     if 'action' in params:
         if action == 'find' and title is not None:
             logger.debug("about to call search series")
-            search_series(title, settings, year)
+            search_series(title, settings, HANDLE, year)
         elif action == 'getdetails' and 'url' in params:
             logger.debug("about to call get series details")
             get_series_details(
-                urllib.parse.unquote_plus(params["url"]), settings)
+                urllib.parse.unquote_plus(params["url"]), settings, HANDLE)
         elif action == 'getepisodelist' and 'url' in params:
             logger.debug("about to call get series episodes")
 
             get_series_episodes(
-                urllib.parse.unquote_plus(params["url"]), settings)
+                urllib.parse.unquote_plus(params["url"]), settings, HANDLE)
         elif action == 'getepisodedetails' and 'url' in params:
             logger.debug("about to call get episode details")
 
             get_episode_details(
-                urllib.parse.unquote_plus(params["url"]), settings)
+                urllib.parse.unquote_plus(params["url"]), settings, HANDLE)
         elif action == 'getartwork' and 'id' in params:
             logger.debug("about to call get artworks")
             get_artworks(urllib.parse.unquote_plus(
-                params["id"]), images_url, settings)
+                params["id"]), images_url, settings, HANDLE)
     xbmcplugin.endOfDirectory(HANDLE)

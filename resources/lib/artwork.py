@@ -8,8 +8,6 @@ import xbmcplugin
 
 from .tvdb import client, get_artworks_from_show
 
-HANDLE = int(sys.argv[1])
-
 
 def add_artworks(show, liz):
     
@@ -38,14 +36,14 @@ def add_artworks(show, liz):
         liz.setAvailableFanart(fanarts)
 
 
-def get_artworks(id, images_url: str, settings):
+def get_artworks(id, images_url: str, settings, handle):
     tvdb_client = client(settings)
 
     show = tvdb_client.get_series_details_api(id, settings)
     if not show:
         xbmcplugin.setResolvedUrl(
-            HANDLE, False, xbmcgui.ListItem(offscreen=True))
+            handle, False, xbmcgui.ListItem(offscreen=True))
         return
     liz = xbmcgui.ListItem(id, offscreen=True)
     add_artworks(show, liz)
-    xbmcplugin.setResolvedUrl(handle=HANDLE, succeeded=True, listitem=liz)
+    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)

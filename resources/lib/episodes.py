@@ -10,12 +10,10 @@ from . import tvdb
 from .nfo import parse_episode_guide_url
 from .utils import logger
 
-HANDLE = int(sys.argv[1])
-
 # add the episodes of a series to the list
 
 
-def get_series_episodes(id, settings):
+def get_series_episodes(id, settings, handle):
     logger.debug(f'Find episodes of tvshow with id {id}')
     if not id.isdigit():
         # Kodi has a bug: when a show directory contains an XML NFO file with
@@ -34,40 +32,52 @@ def get_series_episodes(id, settings):
 
     if not episodes:
         xbmcplugin.setResolvedUrl(
-            HANDLE, False, xbmcgui.ListItem(offscreen=True))
+            handle, False, xbmcgui.ListItem(offscreen=True))
         return
     for ep in episodes:
         liz = xbmcgui.ListItem(ep['name'], offscreen=True)
+        year = None 
+        year_str = ep.get("aired", "")
+        if year_str:
+            year = int(year_str.split("-")[0])
+
         details = {
             'title': ep['name'],
-            'aired': ep['aired']
+            'aired': ep['aired'],
+            'premiered': ep['aired'],
         }
+        if year:
+            details["year"] = year
         details['season'] = ep['seasonNumber']
         details['episode'] = ep['number']
+        logger.debug(details)
         liz.setInfo('video', details)
-        xbmcplugin.addDirectoryItem(handle=HANDLE, url=str(
+        xbmcplugin.addDirectoryItem(handle=handle, url=str(
             ep['id']), listitem=liz, isFolder=True)
-    xbmcplugin.setResolvedUrl(handle=HANDLE, succeeded=True, listitem=liz)
+    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
 
 # get the details of the found episode
 
 
-def get_episode_details(id, settings):
+def get_episode_details(id, settings, handle):
     logger.debug(f'Find info of episode with id {id}')
     client = tvdb.client(settings)
     ep = client.get_episode_details_api(id, settings)
     if not ep:
         xbmcplugin.setResolvedUrl(
-            HANDLE, False, xbmcgui.ListItem(offscreen=True))
+            handle, False, xbmcgui.ListItem(offscreen=True))
         return
     liz = xbmcgui.ListItem(ep["name"], offscreen=True)
+    cast = get_episode_cast(ep)
     details = {
         'title': ep["name"],
         'plot': ep["overview"],
         'plotoutline': ep["overview"],
         'premiered': ep["aired"],
         'aired': ep["aired"],
-        'mediatype': 'episode'
+        'mediatype': 'episode',
+        'director': cast["directors"],
+        'writer': cast["writers"],
     }
 
     liz.setInfo('video', details)
@@ -76,4 +86,14 @@ def get_episode_details(id, settings):
 
     if ep.get("image", "") != "":
         liz.addAvailableArtwork(ep["image"])
-    xbmcplugin.setResolvedUrl(handle=HANDLE, succeeded=True, listitem=liz)
+    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
+
+
+def get_episode_cast(ep):
+    cast = {}
+    writers = [char["personName"] for char in ep.get("characters", []) if char["peopleType"] == "Writer"]   
+    directors = [char["personName"] for char in ep.get("characters", []) if char["peopleType"] == "Director"]   
+
+    cast["writers"] = writers
+    cast["directors"] = directors
+    return cast
