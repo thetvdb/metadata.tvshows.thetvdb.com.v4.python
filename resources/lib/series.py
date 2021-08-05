@@ -26,11 +26,12 @@ def search_series(title, settings, handle, year=None) -> None:
     if search_results is None:
         return
     for show in search_results:
-        nameAndYear = f"{show['name']}" if not show[
-            'year'] else f"{show['name']} ({show['year']})"
+        nameAndYear = f"{show['name']}" if not show.get('year', None) else f"{show['name']} ({show['year']})"
 
         liz = xbmcgui.ListItem(nameAndYear, offscreen=True)
 
+        details = {}
+        details["year"] = int(show['year'])
         xbmcplugin.addDirectoryItem(
             handle=handle,
             url=str(show['tvdb_id']),
@@ -49,9 +50,10 @@ def get_series_details(id, settings, handle):
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
-    liz = xbmcgui.ListItem(show["name"], offscreen=True)
 
-    year_str = show.get("first_aired", "")
+    year_str = show.get("firstAired", "")
+    logger.debug("series year_str outside conditional")
+    logger.debug(year_str)
     year = None
     if year_str != "":
         year = int(year.split("-")[0])
@@ -60,14 +62,22 @@ def get_series_details(id, settings, handle):
                 'plot': show["overview"],
                 'plotoutline': show["overview"],
                 'episodeguide': show["id"],
-                'mediatype': 'tvshow'
+                'mediatype': 'tvshow',
                 }
     if year:
-        details["year"] = year
-        details["premiered"] = show["first_aired"]
-    logger.debug(details)
-    liz.setInfo('video', details
-  )
+        logger.debug("series year_str")
+        logger.debug(year_str)
+        details["premiered"] = year_str
+
+    genres = get_genres(show)
+    details["genre"] = genres
+    name = show["name"]
+    if year:
+        name = f'{name} ({year})'
+    liz = xbmcgui.ListItem(name, offscreen=True)
+
+    logger.debug("series details", details)
+    liz.setInfo('video', details)
     set_cast(liz, show)
     liz.setUniqueIDs({'tvdb': show["id"]}, 'tvdb')
 
@@ -85,3 +95,6 @@ def set_cast(liz, show):
             cast.append(d)
     liz.setCast(cast)
     return
+
+def get_genres(show):
+    return [genre["name"] for genre in show.get("genres", [])]

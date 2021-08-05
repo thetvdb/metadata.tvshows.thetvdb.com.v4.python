@@ -51,17 +51,6 @@
                </constraints>
                <control type="list" format="string" />
             </setting>
-            <setting id="RatingS" type="integer" label="30005">
-               <level>0</level>
-               <default>0</default>
-               <constraints>
-                  <options>
-                     <option label="30009">1</option> <!-- IMDb -->
-                     <option label="30010">2</option> <!-- Trakt -->
-                  </options>
-               </constraints>
-               <control type="spinner" format="integer" />
-            </setting>
 				<setting help="" id="token" type="string">
 					<level>0</level>
 					<default/>

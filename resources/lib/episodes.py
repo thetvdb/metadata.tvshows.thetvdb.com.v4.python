@@ -43,13 +43,11 @@ def get_series_episodes(id, settings, handle):
 
         details = {
             'title': ep['name'],
-            'aired': ep['aired'],
-            'premiered': ep['aired'],
+            'premiered': year_str,
         }
-        if year:
-            details["year"] = year
         details['season'] = ep['seasonNumber']
         details['episode'] = ep['number']
+        logger.debug("details in episodes.py")
         logger.debug(details)
         liz.setInfo('video', details)
         xbmcplugin.addDirectoryItem(handle=handle, url=str(
@@ -74,7 +72,6 @@ def get_episode_details(id, settings, handle):
         'plot': ep["overview"],
         'plotoutline': ep["overview"],
         'premiered': ep["aired"],
-        'aired': ep["aired"],
         'mediatype': 'episode',
         'director': cast["directors"],
         'writer': cast["writers"],

@@ -7,12 +7,14 @@ import urllib.parse
 import urllib.request
 from urllib.request import urlopen
 
-
+apikey = "1fb0f305-6011-4edd-a827-07440421fed9"
+apikey_with_pin = "41080b3a-7506-478e-b616-2775663788b6"
 class Auth:
     def __init__(self, url, apikey, pin="", **kwargs):
         loginInfo = {"apikey": apikey}
         if pin != "":
             loginInfo["pin"] = pin
+            loginInfo["apikey"] = apikey_with_pin
 
         for key, value in kwargs.items():
             loginInfo[key] = value
@@ -422,7 +424,6 @@ def get_season_type(settings):
     # return season_type
 
 
-apikey = "1db81d90-3aa9-4cee-a93d-cc9d4f1925a5"
 
 
 class client(object):
