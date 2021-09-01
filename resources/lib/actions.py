@@ -49,6 +49,8 @@ def run():
     title = urllib.parse.unquote_plus(_title)
     year = params.get("year", None)
 
+    logger.debug("settings:")
+    logger.debug(settings)
     if 'action' in params:
         if action == 'find' and title is not None:
             logger.debug("about to call search series")

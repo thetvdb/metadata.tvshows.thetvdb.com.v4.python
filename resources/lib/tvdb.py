@@ -7,9 +7,12 @@ import urllib.parse
 import urllib.request
 from urllib.request import urlopen
 
+from resources.lib.utils import logger
+
 apikey = "1fb0f305-6011-4edd-a827-07440421fed9"
 apikey_with_pin = "41080b3a-7506-478e-b616-2775663788b6"
 class Auth:
+    logger.debug("logging in")
     def __init__(self, url, apikey, pin="", **kwargs):
         loginInfo = {"apikey": apikey}
         if pin != "":
@@ -32,13 +35,21 @@ class Auth:
 class Request:
     def __init__(self, auth_token):
         self.auth_token = auth_token
+        self.cache = {}
 
     def make_request(self, url):
+        logger.debug("about to make request to url")
+        logger.debug(url)
+        data = self.cache.get(url, None)
+        if data:
+            return data
+
         req = urllib.request.Request(url)
         req.add_header("Authorization", "Bearer {}".format(self.auth_token))
         with urllib.request.urlopen(req) as response:
             res = json.load(response)
             data = res["data"]
+            self.cache[url] = data
             return data
 
 
@@ -415,8 +426,7 @@ def get_language(settings):
     return "eng"
 
 def get_season_type(settings):
-    return 1
-    # season_type = 1
+    season_type = 1
     # if (settings.getSettingBool('absolutenumber') == True):
     #     season_type = 2
     # elif (settings.getSettingBool('dvdorder') == True):

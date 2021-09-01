@@ -44,15 +44,25 @@ def get_series_episodes(id, settings, handle):
         details = {
             'title': ep['name'],
             'premiered': year_str,
+            'date': year_str,
+            "year": year,
         }
         details['season'] = ep['seasonNumber']
         details['episode'] = ep['number']
         logger.debug("details in episodes.py")
         logger.debug(details)
         liz.setInfo('video', details)
-        xbmcplugin.addDirectoryItem(handle=handle, url=str(
-            ep['id']), listitem=liz, isFolder=True)
-    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
+        xbmcplugin.addDirectoryItem(
+            handle=handle, 
+            url=str(ep['id']),
+            listitem=liz, 
+            isFolder=True
+            )
+    xbmcplugin.setResolvedUrl(
+        handle=handle, 
+        succeeded=True, 
+        listitem=liz
+        )
 
 # get the details of the found episode
 
@@ -67,30 +77,68 @@ def get_episode_details(id, settings, handle):
         return
     liz = xbmcgui.ListItem(ep["name"], offscreen=True)
     cast = get_episode_cast(ep)
+    rating = get_rating(ep)
+    tags = get_tags(ep)
+
+    
     details = {
         'title': ep["name"],
         'plot': ep["overview"],
         'plotoutline': ep["overview"],
         'premiered': ep["aired"],
+        'aired': ep["aired"],
         'mediatype': 'episode',
         'director': cast["directors"],
         'writer': cast["writers"],
+        'mpaa': rating,
     }
 
+    if tags:
+        details["tag"] = tags
+
+    logger.debug("details in get episode details")
+    logger.debug(details)
+    logger.debug(ep)
     liz.setInfo('video', details)
 
     liz.setUniqueIDs({'tvdb': ep["id"]}, 'tvdb')
 
     if ep.get("image", "") != "":
         liz.addAvailableArtwork(ep["image"])
-    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
+    xbmcplugin.setResolvedUrl(
+        handle=handle, 
+        succeeded=True, 
+        listitem=liz)
 
 
 def get_episode_cast(ep):
     cast = {}
+    characters = ep.get("characters", None)
+    if not characters:
+        return {"writers": [], "directors": []}
     writers = [char["personName"] for char in ep.get("characters", []) if char["peopleType"] == "Writer"]   
     directors = [char["personName"] for char in ep.get("characters", []) if char["peopleType"] == "Director"]   
 
     cast["writers"] = writers
     cast["directors"] = directors
     return cast
+
+def get_rating(ep):
+    ratings = ep.get("contentRatings", [])
+    rating = ""
+    for r in ratings:
+        if r["country"] == "usa":
+            rating = r["name"]
+    
+    if rating == "" and len(ratings) != 0:
+        rating = ratings[0]["name"]
+    
+    return rating
+
+def get_tags(ep):
+    tags = []
+    tag_options = ep.get("tagOptions", [])
+    if tag_options:
+        for tag in tag_options:
+            tags.append(tag["name"])
+    return tags

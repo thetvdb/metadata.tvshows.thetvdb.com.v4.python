@@ -13,41 +13,54 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
+"Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
-msgid "Use DVD Order"
-msgstr "Use DVD Order"
-
-msgctxt "#30001"
-msgid "Use Absolute Ordering (Single Season)"
-msgstr "Use Absolute Ordering (Single Season)"
-
-msgctxt "#30003"
-msgid "Prefer Posters"
-msgstr "Prefer Posters"
-
-msgctxt "#30004"
 msgid "Language"
 msgstr "Language"
 
+msgctxt "#30001"
+msgid "Season Type"
+msgstr "Season Type"
+
+msgctxt "#30002"
+msgid "Default"
+msgstr "Default"
+
+msgctxt "#30003"
+msgid "Absolute (Single Season)"
+msgstr "Absolute (Single Season)"
+
+msgctxt "#30004"
+msgid "DVD"
+msgstr "DVD"
+
 msgctxt "#30005"
-msgid "Fallback Language"
-msgstr "Fallback Language"
+msgid "Alternate (Requires PIN)"
+msgstr "Alternate (Requires PIN)"
 
 msgctxt "#30006"
 msgid "Gender"
 msgstr "Gender"
 
 msgctxt "#30007"
-msgid "PIN"
-msgstr "PIN"
+msgid "Male"
+msgstr "Male"
 
-msgctxt "30008"
+msgctxt "#30008"
+msgid "Female"
+msgstr "Female"
+
+msgctxt "#30009"
+msgid "Other"
+msgstr "Other"
+
+msgctxt "#30010"
 msgid "Birth Year"
 msgstr "Birth Year"
 
-msgctxt "30009"
-msgid "Settings"
-msgstr "Settings"
+msgctxt "#30011"
+msgid "PIN"
+msgstr "PIN"
+

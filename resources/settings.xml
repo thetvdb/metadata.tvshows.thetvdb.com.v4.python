@@ -1,73 +1,251 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" ?>
 <settings version="1">
-   <section id="metadata.tvdb.com.python">
-      <category id="general" label="30007">
-         <group id="1" label="30007">
-            <setting id="dvdorder" type="boolean" label="30000">
-               <level>0</level>
-               <default>false</default>
-               <control type="toggle" />
-               <dependencies>
-                  <dependency type="enable" setting="absolutenumber">false</dependency>
-               </dependencies>
-            </setting>
-            <setting id="absolutenumber" type="boolean" label="30001">
-               <level>0</level>
-               <default>false</default>
-               <control type="toggle" />
-               <dependencies>
-                  <dependency type="enable" setting="dvdorder">false</dependency>
-               </dependencies>
-            </setting>
-            <setting id="language" type="string" label="30004">
-               <level>0</level>
-               <default>en</default>
-               <constraints>
-                  <options>
-                     <option>cs</option>
-                     <option>da</option>
-                     <option>de</option>
-                     <option>el</option>
-                     <option>en</option>
-                     <option>es</option>
-                     <option>fi</option>
-                     <option>fr</option>
-                     <option>he</option>
-                     <option>hr</option>
-                     <option>hu</option>
-                     <option>it</option>
-                     <option>ja</option>
-                     <option>ko</option>
-                     <option>nl</option>
-                     <option>no</option>
-                     <option>pl</option>
-                     <option>pt</option>
-                     <option>ru</option>
-                     <option>sl</option>
-                     <option>sv</option>
-                     <option>tr</option>
-                     <option>zh</option>
-                  </options>
-               </constraints>
-               <control type="list" format="string" />
-            </setting>
-				<setting help="" id="token" type="string">
+	<section id="metadata.tvshows.thetvdb.com.v4.python">
+		<category id="general" label="128" help="">
+			<group id="1">
+				<setting id="language" type="string" label="30000" help="">
+					<level>0</level>
+					<default>eng</default>
+					<constraints>
+						<options>
+							<option>aar</option>
+							<option>abk</option>
+							<option>afr</option>
+							<option>aka</option>
+							<option>amh</option>
+							<option>ara</option>
+							<option>arg</option>
+							<option>asm</option>
+							<option>ava</option>
+							<option>ave</option>
+							<option>aym</option>
+							<option>aze</option>
+							<option>bak</option>
+							<option>bam</option>
+							<option>bel</option>
+							<option>ben</option>
+							<option>bih</option>
+							<option>bis</option>
+							<option>bod</option>
+							<option>bos</option>
+							<option>bre</option>
+							<option>bul</option>
+							<option>cat</option>
+							<option>ces</option>
+							<option>cha</option>
+							<option>che</option>
+							<option>chu</option>
+							<option>chv</option>
+							<option>cor</option>
+							<option>cos</option>
+							<option>cre</option>
+							<option>cym</option>
+							<option>dan</option>
+							<option>deu</option>
+							<option>div</option>
+							<option>dzo</option>
+							<option>ell</option>
+							<option>eng</option>
+							<option>epo</option>
+							<option>est</option>
+							<option>eus</option>
+							<option>ewe</option>
+							<option>fao</option>
+							<option>fas</option>
+							<option>fij</option>
+							<option>fin</option>
+							<option>fra</option>
+							<option>fry</option>
+							<option>ful</option>
+							<option>gla</option>
+							<option>gle</option>
+							<option>glg</option>
+							<option>glv</option>
+							<option>grn</option>
+							<option>guj</option>
+							<option>hat</option>
+							<option>hau</option>
+							<option>heb</option>
+							<option>her</option>
+							<option>hin</option>
+							<option>hmo</option>
+							<option>hrv</option>
+							<option>hun</option>
+							<option>hye</option>
+							<option>ibo</option>
+							<option>ido</option>
+							<option>iii</option>
+							<option>iku</option>
+							<option>ile</option>
+							<option>ina</option>
+							<option>ind</option>
+							<option>ipk</option>
+							<option>isl</option>
+							<option>ita</option>
+							<option>jav</option>
+							<option>jpn</option>
+							<option>kal</option>
+							<option>kan</option>
+							<option>kas</option>
+							<option>kat</option>
+							<option>kau</option>
+							<option>kaz</option>
+							<option>khm</option>
+							<option>kik</option>
+							<option>kin</option>
+							<option>kir</option>
+							<option>kom</option>
+							<option>kon</option>
+							<option>kor</option>
+							<option>kua</option>
+							<option>kur</option>
+							<option>lao</option>
+							<option>lat</option>
+							<option>lav</option>
+							<option>lim</option>
+							<option>lin</option>
+							<option>lit</option>
+							<option>ltz</option>
+							<option>lub</option>
+							<option>lug</option>
+							<option>mah</option>
+							<option>mal</option>
+							<option>mar</option>
+							<option>mkd</option>
+							<option>mlg</option>
+							<option>mlt</option>
+							<option>mon</option>
+							<option>mri</option>
+							<option>msa</option>
+							<option>mya</option>
+							<option>nau</option>
+							<option>nav</option>
+							<option>nbl</option>
+							<option>nde</option>
+							<option>ndo</option>
+							<option>nep</option>
+							<option>nld</option>
+							<option>nor</option>
+							<option>nya</option>
+							<option>oci</option>
+							<option>oji</option>
+							<option>ori</option>
+							<option>orm</option>
+							<option>oss</option>
+							<option>pan</option>
+							<option>pli</option>
+							<option>pol</option>
+							<option>por</option>
+							<option>pt</option>
+							<option>pus</option>
+							<option>que</option>
+							<option>roh</option>
+							<option>ron</option>
+							<option>run</option>
+							<option>rus</option>
+							<option>sag</option>
+							<option>san</option>
+							<option>sin</option>
+							<option>slk</option>
+							<option>slv</option>
+							<option>sme</option>
+							<option>smo</option>
+							<option>sna</option>
+							<option>snd</option>
+							<option>som</option>
+							<option>sot</option>
+							<option>spa</option>
+							<option>sqi</option>
+							<option>srd</option>
+							<option>srp</option>
+							<option>ssw</option>
+							<option>sun</option>
+							<option>swa</option>
+							<option>swe</option>
+							<option>tah</option>
+							<option>tam</option>
+							<option>tat</option>
+							<option>tel</option>
+							<option>tgk</option>
+							<option>tgl</option>
+							<option>tha</option>
+							<option>tir</option>
+							<option>ton</option>
+							<option>tsn</option>
+							<option>tso</option>
+							<option>tuk</option>
+							<option>tur</option>
+							<option>twi</option>
+							<option>uig</option>
+							<option>ukr</option>
+							<option>urd</option>
+							<option>uzb</option>
+							<option>ven</option>
+							<option>vie</option>
+							<option>vol</option>
+							<option>wln</option>
+							<option>wol</option>
+							<option>xho</option>
+							<option>yid</option>
+							<option>yor</option>
+							<option>yue</option>
+							<option>zha</option>
+							<option>zho</option>
+							<option>zhtw</option>
+							<option>zul</option>
+						</options>
+					</constraints>
+					<control type="list" format="string">
+						<heading>30000</heading>
+					</control>
+				</setting>
+				<setting id="season_type" type="string" label="30001" help="">
+					<level>0</level>
+					<default>1</default>
+					<constraints>
+					<options>
+						<option label="30002">1</option>
+						<option label="30003">2</option>
+						<option label="30004">3</option>
+						<option label="30005">4</option>
+					</options>
+					</constraints>
+					<control type="list" format="string">
+						<heading>30001</heading>
+					</control>
+				</setting>
+				<setting id="gender" type="string" label="30006" help="">
+					<level>0</level>
+					<default>Other</default>
+					<constraints>
+						<options>
+							<option label="30007">Male</option>
+							<option label="30008">Female</option>
+							<option label="30009">Other</option>
+						</options>
+					</constraints>
+					<control type="list" format="string">
+						<heading>30003</heading>
+					</control>
+				</setting>
+				<setting id="year" type="integer" label="30010" help="">
+					<level>0</level>
+					<default>1900</default>
+					<control type="edit" format="integer">
+						<heading>30010</heading>
+					</control>
+				</setting>
+				<setting id="pin" type="string" label="30011" help="">
 					<level>0</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
-					<dependencies>
-						<dependency type="visible">
-							<condition name="InfoBool" on="property">false</condition>
-						</dependency>
-					</dependencies>
-					<control format="string" type="edit">
-						<heading/>
+					<control type="edit" format="string">
+						<heading>30011</heading>
 					</control>
 				</setting>
-
-         </group>
-      </category>
-   </section>
+			</group>
+		</category>
+	</section>
 </settings>

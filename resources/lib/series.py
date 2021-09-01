@@ -25,19 +25,22 @@ def search_series(title, settings, handle, year=None) -> None:
 
     if search_results is None:
         return
-    for show in search_results:
+    
+    items = []
+    for show in search_results: 
         nameAndYear = f"{show['name']}" if not show.get('year', None) else f"{show['name']} ({show['year']})"
 
         liz = xbmcgui.ListItem(nameAndYear, offscreen=True)
+        url = str(show['tvdb_id'])
+        is_folder = True
+        items.append((url, liz, is_folder))
 
-        details = {}
-        details["year"] = int(show['year'])
-        xbmcplugin.addDirectoryItem(
-            handle=handle,
-            url=str(show['tvdb_id']),
-            listitem=liz,
-            isFolder=True
-        )
+        
+    xbmcplugin.addDirectoryItems(
+        handle,
+        items,
+        len(items)
+    )
 
 
 def get_series_details(id, settings, handle):
@@ -56,7 +59,7 @@ def get_series_details(id, settings, handle):
     logger.debug(year_str)
     year = None
     if year_str != "":
-        year = int(year.split("-")[0])
+        year = int(year_str.split("-")[0])
     details = {'title': show["name"],
                 'tvshowtitle': show["name"],
                 'plot': show["overview"],
@@ -68,9 +71,15 @@ def get_series_details(id, settings, handle):
         logger.debug("series year_str")
         logger.debug(year_str)
         details["premiered"] = year_str
-
+    studio = get_studio(show)
+    if studio:
+        details["studio"] = studio
     genres = get_genres(show)
     details["genre"] = genres
+
+    country = show.get("originalCountry", None)
+    if country:
+        details["country"] = country
     name = show["name"]
     if year:
         name = f'{name} ({year})'
@@ -82,7 +91,10 @@ def get_series_details(id, settings, handle):
     liz.setUniqueIDs({'tvdb': show["id"]}, 'tvdb')
 
     add_artworks(show, liz)
-    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
+    xbmcplugin.setResolvedUrl(
+        handle=handle, 
+        succeeded=True, 
+        listitem=liz)
 
 
 def set_cast(liz, show):
@@ -98,3 +110,33 @@ def set_cast(liz, show):
 
 def get_genres(show):
     return [genre["name"] for genre in show.get("genres", [])]
+
+def get_studio(show):
+    companies = show.get("companies", [])
+    if len(companies) == 0:
+        return None
+    studio = None
+    for company in companies:
+        if company["primaryCompanyType"] == 1:
+            studio = company["name"]
+    if studio:
+        return studio
+    return companies[0]["name"]
+def get_studio(movie):
+    companies = movie.get("companies", [])
+    if len(companies) is 0:
+        return None
+    studio = None
+    for company in companies:
+        if company["primaryCompanyType"] == 1:
+            studio = company["name"]
+    if studio:
+        return studio
+    return companies[0]["name"]
+def get_tags(movie):
+    tags = []
+    tag_options = movie.get("tagOptions", [])
+    if tag_options:
+        for tag in tag_options:
+            tags.append(tag["name"])
+    return tags
