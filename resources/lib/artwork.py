@@ -8,13 +8,13 @@ import xbmcplugin
 
 from .tvdb import client, get_artworks_from_show
 
-
+ART_LENGTH = 10
 def add_artworks(show, liz):
     
     artworks = get_artworks_from_show(show)
-    posters = artworks.get("posters", [])
-    banners = artworks.get("banners", [])
-    fanarts = artworks.get("fanarts", [])
+    posters = artworks.get("posters", [])[:10]
+    banners = artworks.get("banners", [])[:10]
+    fanarts = artworks.get("fanarts", [])[:10]
     season_posters = artworks.get("season_posters", [])
 
 

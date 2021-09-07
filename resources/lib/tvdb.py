@@ -423,15 +423,11 @@ class TVDB:
         return ep
 
 def get_language(settings):
-    return "eng"
+    return settings.get("language", "eng")
 
 def get_season_type(settings):
-    season_type = 1
-    # if (settings.getSettingBool('absolutenumber') == True):
-    #     season_type = 2
-    # elif (settings.getSettingBool('dvdorder') == True):
-    #     season_type = 3
-    # return season_type
+    season_type_str = settings.get("season_type", "1")
+    return int(season_type_str)
 
 
 

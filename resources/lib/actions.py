@@ -18,6 +18,8 @@ import xbmcplugin
 
 from .artwork import get_artworks
 from .episodes import get_episode_details, get_series_episodes
+# from .artwork import get_artworks
+from .nfo import get_show_id_from_nfo
 from .series import get_series_details, search_series
 from .utils import logger
 
@@ -28,8 +30,6 @@ from .utils import logger
 
 # import episodes
 
-# from .artwork import get_artworks
-# from .nfo import get_show_id_from_nfo
 
 ADDON_SETTINGS = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])

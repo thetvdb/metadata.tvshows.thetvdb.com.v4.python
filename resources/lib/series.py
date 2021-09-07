@@ -133,9 +133,9 @@ def get_studio(movie):
     if studio:
         return studio
     return companies[0]["name"]
-def get_tags(movie):
+def get_tags(show):
     tags = []
-    tag_options = movie.get("tagOptions", [])
+    tag_options = show.get("tagOptions", [])
     if tag_options:
         for tag in tag_options:
             tags.append(tag["name"])
