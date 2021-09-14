@@ -13,24 +13,24 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en_AU\n"
+"Language: pt_PT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
 msgid "Language"
-msgstr "Language"
+msgstr "Idioma"
 
 msgctxt "#30001"
 msgid "Season Type"
-msgstr "Season Type"
+msgstr "Tipo de Temporada"
 
 msgctxt "#30002"
 msgid "Default"
-msgstr "Default"
+msgstr "Predefinição"
 
 msgctxt "#30003"
 msgid "Absolute (Single Season)"
-msgstr "Absolute (Single Season)"
+msgstr "Absoluto (Temporada Única)"
 
 msgctxt "#30004"
 msgid "DVD"
@@ -38,27 +38,27 @@ msgstr "DVD"
 
 msgctxt "#30005"
 msgid "Alternate (Requires PIN)"
-msgstr "Alternate (Requires PIN)"
+msgstr "Alternativo (Requer um PIN)"
 
 msgctxt "#30006"
 msgid "Gender"
-msgstr "Gender"
+msgstr "Género"
 
 msgctxt "#30007"
 msgid "Male"
-msgstr "Male"
+msgstr "Masculino"
 
 msgctxt "#30008"
 msgid "Female"
-msgstr "Female"
+msgstr "Feminino"
 
 msgctxt "#30009"
 msgid "Other"
-msgstr "Other"
+msgstr "Outro"
 
 msgctxt "#30010"
 msgid "Birth Year"
-msgstr "Birth Year"
+msgstr "Ano de Nascimento"
 
 msgctxt "#30011"
 msgid "PIN"

@@ -21,6 +21,8 @@ class Auth:
 
         for key, value in kwargs.items():
             loginInfo[key] = value
+        logger.debug("body in auth call")
+        logger.debug(loginInfo)
         loginInfoBytes = json.dumps(loginInfo, indent=2).encode('utf-8')
         req = urllib.request.Request(url, data=loginInfoBytes)
         req.add_header("Content-Type", "application/json")
@@ -202,7 +204,7 @@ class TVDB:
     def __init__(self, apikey: str, pin="", **kwargs):
         self.url = Url()
         login_url = self.url.login_url()
-        self.auth = Auth(login_url, apikey, pin)
+        self.auth = Auth(login_url, apikey, pin, **kwargs)
         auth_token = self.auth.get_token()
         self.request = Request(auth_token)
 
@@ -398,9 +400,14 @@ class TVDB:
             episodes.extend(res)
         return episodes
 
-    def get_series_details_api(self, id, settings={}, language="eng") -> dict:
+    def get_series_details_api(self, id, settings={}) -> dict:
         series = self.get_series_extended(id)
-        translations = self.get_series_translation(id, language)
+        lang = get_language(settings)
+        translations = None
+        try:
+            translations = self.get_series_translation(id, lang)
+        except:
+            translations = self.get_series_translation(id, "eng")
         overview = translations.get("overview", "")
         series["overview"] = overview
         name = translations.get("name", "")
@@ -414,7 +421,11 @@ class TVDB:
     def get_episode_details_api(self, id, settings):
         ep = self.get_episode_extended(id)
         lang = get_language(settings)
-        trans = self.get_episode_translation(id, lang)
+        trans = None
+        try:
+            trans = self.get_episode_translation(id, lang)
+        except:
+            trans = self.get_episode_translation(id, "eng")
         overview = trans.get("overview", "")
         ep["overview"] = overview
         name = trans.get("name", "")
@@ -438,7 +449,10 @@ class client(object):
     def __new__(cls, settings={}):
         if cls._instance is None:
             pin = settings.get("pin", "")
-            cls._instance = TVDB(apikey, pin=pin, settings=settings)
+            gender = settings.get("gender", "Other")
+            uuid = settings.get("uuid", "")
+            birth_year = settings.get("year", "")
+            cls._instance = TVDB(apikey, pin=pin,gender=gender, birthYear=birth_year, uuid=uuid)
         return cls._instance
 
 ARTWORK_TYPE_BANNER = 1

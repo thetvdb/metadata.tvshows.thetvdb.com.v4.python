@@ -23,7 +23,7 @@ def add_artworks(show, liz):
         liz.addAvailableArtwork(poster["image"], 'poster')
 
     for banner in banners:
-        liz.addAvailableArtwork(poster["image"], 'banner')
+        liz.addAvailableArtwork(banner["image"], 'banner')
 
     for (image, season_number) in season_posters:
         liz.addAvailableArtwork(image, 'poster', season=season_number)
@@ -32,8 +32,7 @@ def add_artworks(show, liz):
     for fanart in fanarts:
         fanart_items.append(
             {'image': fanart["image"], 'preview': fanart["thumbnail"]})
-    if fanarts:
-        liz.setAvailableFanart(fanarts)
+    liz.setAvailableFanart(fanart_items)
 
 
 def get_artworks(id, images_url: str, settings, handle):

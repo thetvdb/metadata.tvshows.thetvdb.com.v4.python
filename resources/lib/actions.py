@@ -21,12 +21,7 @@ from .episodes import get_episode_details, get_series_episodes
 # from .artwork import get_artworks
 from .nfo import get_show_id_from_nfo
 from .series import get_series_details, search_series
-from .utils import logger
-
-# from .settings import PathSpecificSettings
-# from .utils import create_uuid, log
-
-
+from .utils import create_uuid, logger
 
 # import episodes
 
@@ -48,6 +43,13 @@ def run():
     _title = params.get("title", "")
     title = urllib.parse.unquote_plus(_title)
     year = params.get("year", None)
+
+    uuid = settings.get("uuid", None)
+    if not uuid or uuid == "":
+        uuid = create_uuid()
+        ADDON_SETTINGS.setSetting("uuid", uuid)
+        settings["uuid"] = uuid
+
 
     logger.debug("settings:")
     logger.debug(settings)

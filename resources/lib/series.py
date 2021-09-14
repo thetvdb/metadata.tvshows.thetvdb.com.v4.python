@@ -48,7 +48,7 @@ def get_series_details(id, settings, handle):
     logger.debug(f'Find info of tvshow with id {id}')
     tvdb_client = tvdb.client(settings)
 
-    show = tvdb_client.get_series_details_api(id, settings,)
+    show = tvdb_client.get_series_details_api(id, settings)
     if not show:
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
