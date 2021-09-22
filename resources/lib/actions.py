@@ -68,11 +68,13 @@ def run():
                 urllib.parse.unquote_plus(params["url"]), settings, HANDLE)
         elif action == 'getepisodedetails' and 'url' in params:
             logger.debug("about to call get episode details")
-
             get_episode_details(
                 urllib.parse.unquote_plus(params["url"]), settings, HANDLE)
         elif action == 'getartwork' and 'id' in params:
             logger.debug("about to call get artworks")
             get_artworks(urllib.parse.unquote_plus(
                 params["id"]), images_url, settings, HANDLE)
+        elif params['action'].lower() == 'nfourl':
+            logger.debug('performing nfourl action')
+            get_show_id_from_nfo(params['nfo'])
     xbmcplugin.endOfDirectory(HANDLE)
