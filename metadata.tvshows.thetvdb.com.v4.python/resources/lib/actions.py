@@ -1,39 +1,27 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-from __future__ import absolute_import, unicode_literals
-
 import json
-import os.path
 import sys
 import urllib.error
 import urllib.parse
 import urllib.request
-import uuid
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-import xbmc
 import xbmcaddon
 import xbmcplugin
 
 from .artwork import get_artworks
 from .episodes import get_episode_details, get_series_episodes
-# from .artwork import get_artworks
 from .nfo import get_show_id_from_nfo
 from .series import get_series_details, search_series
 from .utils import create_uuid, logger
 
-# import episodes
-
-
 ADDON_SETTINGS = xbmcaddon.Addon()
 HANDLE = int(sys.argv[1])
-images_url = 'http://thetvdb.com/banners/'
+IMAGES_URL = 'http://thetvdb.com/banners/'
+
 
 def run():
     qs = sys.argv[2][1:]
     params = dict(urllib.parse.parse_qsl(qs))
-    logger.debug("THE TVDB ADDON")
+    logger.debug("THE TVDB TV SHOWS SCRAPER V.4")
     logger.debug(params)
 
     _action = params.get("action", "")
@@ -73,8 +61,8 @@ def run():
         elif action == 'getartwork' and 'id' in params:
             logger.debug("about to call get artworks")
             get_artworks(urllib.parse.unquote_plus(
-                params["id"]), images_url, settings, HANDLE)
+                params["id"]), IMAGES_URL, settings, HANDLE)
         elif params['action'].lower() == 'nfourl':
             logger.debug('performing nfourl action')
-            get_show_id_from_nfo(params['nfo'])
+            get_show_id_from_nfo(params['nfo'], settings)
     xbmcplugin.endOfDirectory(HANDLE)

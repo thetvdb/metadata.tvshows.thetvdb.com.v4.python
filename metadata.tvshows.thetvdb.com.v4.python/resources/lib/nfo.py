@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 import re
 from collections import namedtuple
 
@@ -21,7 +18,7 @@ SHOW_ID_REGEXPS = (
 UrlParseResult = namedtuple('UrlParseResult', ['provider', 'show_id'])
 
 
-def get_show_id_from_nfo(nfo: bytes, settings):
+def get_show_id_from_nfo(nfo, settings):
     """
     Get show info by NFO file contents
 
@@ -30,12 +27,10 @@ def get_show_id_from_nfo(nfo: bytes, settings):
 
     :param nfo: the contents of a NFO file
     """
-    if isinstance(nfo, bytes):
-        nfo = nfo.decode('utf-8', 'replace')
     logger.debug(f'Parsing NFO file:\n{nfo}')
     parse_result = _parse_nfo_url(nfo)
     if parse_result:
-        if parse_result.provider == 'tvdb' or parse_result.provider == 'thetvdb':
+        if parse_result.provider in ('tvdb', 'thetvdb'):
             if parse_result.show_id.isdigit():
                 series.search_series_by_tvdb_id(
                     parse_result.show_id,
