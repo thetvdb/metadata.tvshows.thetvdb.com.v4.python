@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+from resources.lib import actions, exception_logger
 
-from resources.lib import actions
-
-actions.run()
+with exception_logger.log_exception():
+    actions.run()
