@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import uuid
 
 import xbmc
@@ -15,8 +13,6 @@ class logger:
 
     @staticmethod
     def log(message, level=xbmc.LOGDEBUG):
-        if isinstance(message, bytes):
-            message = message.decode('utf-8')
         message = logger.log_message_prefix + str(message)
         xbmc.log(message, level)
 
