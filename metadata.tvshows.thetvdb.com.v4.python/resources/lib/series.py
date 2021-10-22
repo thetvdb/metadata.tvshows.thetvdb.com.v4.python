@@ -119,19 +119,6 @@ def get_studio(show):
     return companies[0]["name"]
 
 
-def get_studio(movie):
-    companies = movie.get("companies", [])
-    if len(companies) is 0:
-        return None
-    studio = None
-    for company in companies:
-        if company["primaryCompanyType"] == 1:
-            studio = company["name"]
-    if studio:
-        return studio
-    return companies[0]["name"]
-
-
 def get_tags(show):
     tags = []
     tag_options = show.get("tagOptions", [])
