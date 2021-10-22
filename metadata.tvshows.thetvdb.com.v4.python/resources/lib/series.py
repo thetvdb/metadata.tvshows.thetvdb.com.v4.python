@@ -5,6 +5,11 @@ from . import tvdb
 from .artwork import add_artworks
 from .utils import logger
 
+SUPPORTED_REMOTE_IDS = {
+    'IMDB': 'imdb',
+    'TheMovieDB.com': 'tmdb',
+}
+
 
 def search_series(title, settings, handle, year=None) -> None:
     # add the found shows to the list
@@ -81,7 +86,8 @@ def get_series_details(id, settings, handle):
     logger.debug("series details", details)
     liz.setInfo('video', details)
     set_cast(liz, show)
-    liz.setUniqueIDs({'tvdb': show["id"]}, 'tvdb')
+    unique_ids = get_unique_ids(show)
+    liz.setUniqueIDs(unique_ids, 'tvdb')
 
     add_artworks(show, liz)
     xbmcplugin.setResolvedUrl(
@@ -126,3 +132,14 @@ def get_tags(show):
         for tag in tag_options:
             tags.append(tag["name"])
     return tags
+
+
+def get_unique_ids(show):
+    unique_ids = {'tvdb': show['id']}
+    remote_ids = show.get('remoteIds')
+    if remote_ids:
+        for remote_id_info in remote_ids:
+            source_name = remote_id_info.get('sourceName')
+            if source_name in SUPPORTED_REMOTE_IDS:
+                unique_ids[SUPPORTED_REMOTE_IDS[source_name]] = remote_id_info['id']
+    return unique_ids
