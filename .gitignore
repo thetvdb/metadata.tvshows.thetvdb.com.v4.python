@@ -1,3 +1,5 @@
+### Python template
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -13,7 +15,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+#lib/
 lib64/
 parts/
 sdist/
@@ -136,5 +138,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-__pycache__
-__pypackages__
+# Custom ignores
+.idea/
+.vscode/
+*.zip
