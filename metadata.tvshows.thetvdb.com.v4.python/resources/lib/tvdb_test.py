@@ -1,7 +1,14 @@
+import pathlib
+import sys
 import unittest
 
-from settings import PathSpecificSettings
+
+project_dir = pathlib.Path('.').resolve().parent.parent
+sys.path.append(str(project_dir))
+
 from tvdb import TVDB, client, get_artworks_from_show
+
+
 
 apikey = "1db81d90-3aa9-4cee-a93d-cc9d4f1925a5"
 
@@ -16,7 +23,7 @@ class TestTVDB(unittest.TestCase):
 
     def test_search(self):
         api = TVDB(apikey)
-        res = api.search("lost", type="series", year="2004")
+        res = api.search("lost", type="series", year="2004", limit=10)
         first = res[0]
         self.assertEqual(first.get("name"), "Lost")
         self.assertEqual(first.get("tvdb_id"), "73739")
@@ -28,7 +35,8 @@ class TestTVDB(unittest.TestCase):
 
     def test_get_series_details(self):
         c = client()
-        show = c.get_series_details_api(73739, "eng")
+        settings = {'language': 'eng'}
+        show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
         overview = show.get("overview", None)
         self.assertIsNotNone(overview)
@@ -37,8 +45,8 @@ class TestTVDB(unittest.TestCase):
         self.assertIsNotNone(name)
         self.assertNotEqual(name, "")
         self.assertEqual(name, "Lost")
-
-        show = c.get_series_details_api(73739, {}, "spa")
+        settings = {'language': 'spa'}
+        show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
         overview = show.get("overview", None)
         self.assertIsNotNone(overview)
@@ -57,7 +65,8 @@ class TestTVDB(unittest.TestCase):
 
     def test_get_artwork(self):
         c = client()
-        show = c.get_series_details_api(73739, "eng")
+        settings = {'language': 'eng'}
+        show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
         artworks = get_artworks_from_show(show)
         self.assertIsNotNone(artworks)

@@ -375,12 +375,12 @@ class TVDB:
 
     def get_all_tag_options(self, page=0) -> list:
         """Returns a list of tag options"""
-        url = self.url.tag_options_url(page)
+        url = self.url.tag_options_url()
         return self.request.make_request(url)
 
     def get_tag_option(self, id: int) -> dict:
         """Returns a tag option dictionary"""
-        url = self.url.tag_option_url()
+        url = self.url.tag_option_url(id)
         return self.request.make_request(url)
 
     def search(self, query, **kwargs) -> list:
@@ -400,7 +400,8 @@ class TVDB:
             episodes.extend(res)
         return episodes
 
-    def get_series_details_api(self, id, settings={}) -> dict:
+    def get_series_details_api(self, id, settings=None) -> dict:
+        settings = settings or {}
         series = self.get_series_extended(id)
         lang = get_language(settings)
         translations = None
@@ -446,13 +447,14 @@ def get_season_type(settings):
 class client(object):
     _instance = None
 
-    def __new__(cls, settings={}):
+    def __new__(cls, settings=None):
+        settings = settings or {}
         if cls._instance is None:
             pin = settings.get("pin", "")
             gender = settings.get("gender", "Other")
             uuid = settings.get("uuid", "")
             birth_year = settings.get("year", "")
-            cls._instance = TVDB(apikey, pin=pin,gender=gender, birthYear=birth_year, uuid=uuid)
+            cls._instance = TVDB(apikey, pin=pin, gender=gender, birthYear=birth_year, uuid=uuid)
         return cls._instance
 
 ARTWORK_TYPE_BANNER = 1
