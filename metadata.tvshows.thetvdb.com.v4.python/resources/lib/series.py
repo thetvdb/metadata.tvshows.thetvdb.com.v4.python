@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
-import sys
-
 import xbmcgui
 import xbmcplugin
 
@@ -16,11 +11,10 @@ def search_series(title, settings, handle, year=None) -> None:
     logger.debug(f'Searching for TV show "{title}"')
 
     tvdb_client = tvdb.client(settings)
-    search_results = None
     if year is None:
-        search_results = tvdb_client.search(title, type="series")
+        search_results = tvdb_client.search(title, type="series", limit=10)
     else:
-        search_results = tvdb_client.search(title, year=year, type="series")
+        search_results = tvdb_client.search(title, year=year, type="series", limit=10)
     logger.debug(f'Search results {search_results}')
 
     if search_results is None:
@@ -35,7 +29,6 @@ def search_series(title, settings, handle, year=None) -> None:
         is_folder = True
         items.append((url, liz, is_folder))
 
-        
     xbmcplugin.addDirectoryItems(
         handle,
         items,
@@ -108,8 +101,10 @@ def set_cast(liz, show):
     liz.setCast(cast)
     return
 
+
 def get_genres(show):
     return [genre["name"] for genre in show.get("genres", [])]
+
 
 def get_studio(show):
     companies = show.get("companies", [])
@@ -122,6 +117,8 @@ def get_studio(show):
     if studio:
         return studio
     return companies[0]["name"]
+
+
 def get_studio(movie):
     companies = movie.get("companies", [])
     if len(companies) is 0:
@@ -133,6 +130,8 @@ def get_studio(movie):
     if studio:
         return studio
     return companies[0]["name"]
+
+
 def get_tags(show):
     tags = []
     tag_options = show.get("tagOptions", [])
