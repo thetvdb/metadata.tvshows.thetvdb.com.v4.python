@@ -121,7 +121,7 @@ def get_genres(show):
 
 def get_studio(show):
     companies = show.get("companies", [])
-    if len(companies) == 0:
+    if not companies:
         return None
     studio = None
     for company in companies:
