@@ -1,6 +1,9 @@
 import re
 from collections import namedtuple
 
+import xbmcgui
+import xbmcplugin
+
 from . import series
 from .utils import logger
 
@@ -18,7 +21,7 @@ SHOW_ID_REGEXPS = (
 UrlParseResult = namedtuple('UrlParseResult', ['provider', 'show_id'])
 
 
-def get_show_id_from_nfo(nfo, settings):
+def get_show_id_from_nfo(nfo, settings, plugin_handle):
     """
     Get show info by NFO file contents
 
@@ -29,18 +32,15 @@ def get_show_id_from_nfo(nfo, settings):
     """
     logger.debug(f'Parsing NFO file:\n{nfo}')
     parse_result = _parse_nfo_url(nfo)
-    if parse_result:
+    if parse_result is not None:
+        list_item = xbmcgui.ListItem(offscreen=True)
         if parse_result.provider in ('tvdb', 'thetvdb'):
-            if parse_result.show_id.isdigit():
-                series.search_series_by_tvdb_id(
-                    parse_result.show_id,
-                    settings
-                )
-            else:  # id seems to be the show name
-                series.search_series(
-                    parse_result.show_id,
-                    settings
-                )
+            xbmcplugin.addDirectoryItem(
+                handle=plugin_handle,
+                url=parse_result.show_id,
+                listitem=list_item,
+                isFolder=True
+            )
 
 
 def parse_episode_guide_url(episode_guide):

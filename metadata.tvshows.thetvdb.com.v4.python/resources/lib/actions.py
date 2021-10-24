@@ -64,5 +64,5 @@ def run():
                 params["id"]), IMAGES_URL, settings, HANDLE)
         elif params['action'].lower() == 'nfourl':
             logger.debug('performing nfourl action')
-            get_show_id_from_nfo(params['nfo'], settings)
+            get_show_id_from_nfo(params['nfo'], settings, HANDLE)
     xbmcplugin.endOfDirectory(HANDLE)
