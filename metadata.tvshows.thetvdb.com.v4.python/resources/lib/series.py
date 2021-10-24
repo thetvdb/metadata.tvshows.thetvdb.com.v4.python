@@ -103,10 +103,14 @@ def set_cast(liz, show):
     cast = []
     for char in show["characters"]:
         if char["peopleType"] == "Actor":
-            d = {}
-            d["name"] = char["personName"]
-            d["role"] = char["name"]
-            cast.append(d)
+            data = {
+                'name': char['personName'],
+                'role': char['name'],
+            }
+            thumbnail = char.get('image')
+            if thumbnail:
+                data['thumbnail'] = thumbnail
+            cast.append(data)
     liz.setCast(cast)
     return
 
