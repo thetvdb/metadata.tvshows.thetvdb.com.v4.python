@@ -7,6 +7,8 @@ from resources.lib.utils import logger
 
 apikey = "1fb0f305-6011-4edd-a827-07440421fed9"
 apikey_with_pin = "41080b3a-7506-478e-b616-2775663788b6"
+
+
 class Auth:
     logger.debug("logging in")
     def __init__(self, url, apikey, pin="", **kwargs):
