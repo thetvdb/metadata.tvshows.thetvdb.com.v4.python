@@ -56,7 +56,7 @@ def get_series_details(id, settings, handle):
     logger.debug("series year_str outside conditional")
     logger.debug(year_str)
     year = None
-    if year_str != "":
+    if year_str:
         year = int(year_str.split("-")[0])
     details = {'title': show["name"],
                 'tvshowtitle': show["name"],
@@ -78,6 +78,9 @@ def get_series_details(id, settings, handle):
     country = show.get("originalCountry", None)
     if country:
         details["country"] = country
+    status = show.get('status')
+    if status:
+        details['status'] = status['name']
     name = show["name"]
     if year:
         name = f'{name} ({year})'
