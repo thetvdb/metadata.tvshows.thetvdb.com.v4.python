@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
-
-class PathSpecificSettings(object):
+class PathSpecificSettings:
     # read-only shim for typed `xbmcaddon.Addon().getSetting*` methods
     def __init__(self, settings_dict, log_fn):
         self.data = settings_dict

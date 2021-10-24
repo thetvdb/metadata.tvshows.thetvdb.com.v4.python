@@ -1,14 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
-import sys
-
 import xbmcgui
 import xbmcplugin
 
 from . import tvdb
 from .nfo import parse_episode_guide_url
 from .utils import logger
+
 
 # add the episodes of a series to the list
 

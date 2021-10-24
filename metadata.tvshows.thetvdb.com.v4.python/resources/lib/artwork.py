@@ -1,14 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
-import sys
-
 import xbmcgui
 import xbmcplugin
 
 from .tvdb import client, get_artworks_from_show
 
 ART_LENGTH = 10
+
+
 def add_artworks(show, liz):
     
     artworks = get_artworks_from_show(show)

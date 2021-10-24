@@ -1,11 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 import json
 import urllib
 import urllib.parse
 import urllib.request
-from urllib.request import urlopen
 
 from resources.lib.utils import logger
 
