@@ -117,25 +117,25 @@ def set_cast(liz, show):
 
 
 def get_genres(show):
-    return [genre["name"] for genre in show.get("genres", [])]
+    return [genre["name"] for genre in show.get("genres", ())]
 
 
 def get_studio(show):
-    companies = show.get("companies", [])
+    companies = show.get("companies", ())
     if not companies:
         return None
     studio = None
+    if len(companies) == 1:
+        return companies[0]['name']
     for company in companies:
         if company["primaryCompanyType"] == 1:
             studio = company["name"]
-    if studio:
-        return studio
-    return companies[0]["name"]
+    return studio
 
 
 def get_tags(show):
     tags = []
-    tag_options = show.get("tagOptions", [])
+    tag_options = show.get("tagOptions", ())
     if tag_options:
         for tag in tag_options:
             tags.append(tag["name"])
