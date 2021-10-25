@@ -6,15 +6,13 @@ from .tvdb import client, get_artworks_from_show
 ART_LENGTH = 10
 
 
-def add_artworks(show, liz):
+def add_artworks(show, liz, language):
     
-    artworks = get_artworks_from_show(show)
-    posters = artworks.get("posters", [])[:10]
-    banners = artworks.get("banners", [])[:10]
-    fanarts = artworks.get("fanarts", [])[:10]
+    artworks = get_artworks_from_show(show, language)
+    posters = artworks.get("posters", [])[:ART_LENGTH]
+    banners = artworks.get("banners", [])[:ART_LENGTH]
+    fanarts = artworks.get("fanarts", [])[:ART_LENGTH]
     season_posters = artworks.get("season_posters", [])
-
-
 
     for poster in posters:
         liz.addAvailableArtwork(poster["image"], 'poster')
@@ -32,7 +30,7 @@ def add_artworks(show, liz):
     liz.setAvailableFanart(fanart_items)
 
 
-def get_artworks(id, images_url: str, settings, handle):
+def get_artworks(id, settings, handle):
     tvdb_client = client(settings)
 
     show = tvdb_client.get_series_details_api(id, settings)
@@ -41,5 +39,6 @@ def get_artworks(id, images_url: str, settings, handle):
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
     liz = xbmcgui.ListItem(id, offscreen=True)
-    add_artworks(show, liz)
+    language = settings.get('language', 'eng')
+    add_artworks(show, liz, language)
     xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)

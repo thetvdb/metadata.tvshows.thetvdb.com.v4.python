@@ -1,3 +1,4 @@
+import enum
 import json
 import urllib
 import urllib.parse
@@ -7,6 +8,13 @@ from resources.lib.utils import logger
 
 apikey = "1fb0f305-6011-4edd-a827-07440421fed9"
 apikey_with_pin = "41080b3a-7506-478e-b616-2775663788b6"
+
+
+class ArtworkType(enum.IntEnum):
+    BANNER = 1
+    POSTER = 2
+    FANART = 3
+    SEASON_POSTER = 7
 
 
 class Auth:
@@ -429,17 +437,16 @@ class TVDB:
         ep["overview"] = overview
         name = trans.get("name", "")
         ep["name"] = name
-
         return ep
+
 
 def get_language(settings):
     return settings.get("language", "eng")
 
+
 def get_season_type(settings):
     season_type_str = settings.get("season_type", "1")
     return int(season_type_str)
-
-
 
 
 class client(object):
@@ -455,18 +462,34 @@ class client(object):
             cls._instance = TVDB(apikey, pin=pin, gender=gender, birthYear=birth_year, uuid=uuid)
         return cls._instance
 
-ARTWORK_TYPE_BANNER = 1
-ARTWORK_TYPE_POSTER = 2
-ARTWORK_TYPE_FANART = 3
-ARTWORK_TYPE_SEASON_POSTER = 7
 
+def get_artworks_from_show(show: dict, language: str = 'eng'):
 
-def get_artworks_from_show(show:dict):
+    def filter_by_language(item):
+        item_language = item.get('language')
+        return item_language in (language, 'eng') or item_language is None
+
+    def sorter(item):
+        item_language = item.get('language')
+        score = item.get('score', 0)
+        return item_language == language, score
+
     artworks = show.get("artworks", [{}])
-
-    banners = sorted([art for art in artworks if art.get("type", 0) == ARTWORK_TYPE_BANNER], key=lambda image: image.get("score", 0),reverse=True)
-    posters = sorted([art for art in artworks if art.get("type", 0) == ARTWORK_TYPE_POSTER], key=lambda image: image.get("score", 0),reverse=True)
-    fanarts = sorted([art for art in artworks if art.get("type", 0) == ARTWORK_TYPE_FANART], key=lambda image: image.get("score", 0),reverse=True)
+    artworks = filter(filter_by_language, artworks)
+    banners = []
+    posters = []
+    fanarts = []
+    for art in artworks:
+        art_type = art.get('type')
+        if art_type == ArtworkType.BANNER:
+            banners.append(art)
+        elif art_type == ArtworkType.POSTER:
+            posters.append(art)
+        elif art_type == ArtworkType.FANART:
+            fanarts.append(art)
+    banners.sort(key=sorter, reverse=True)
+    posters.sort(key=sorter, reverse=True)
+    fanarts.sort(key=sorter, reverse=True)
     season_posters = [(season.get("image", ""), season.get("number", 0)) for season in show.get("seasons", [])]
     artwork_dict = {
         "banners": banners,
@@ -475,4 +498,3 @@ def get_artworks_from_show(show:dict):
         "season_posters": season_posters,
     }
     return artwork_dict
-

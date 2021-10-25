@@ -51,7 +51,6 @@ def run():
                 urllib.parse.unquote_plus(params["url"]), settings, HANDLE)
         elif action == 'getepisodelist' and 'url' in params:
             logger.debug("about to call get series episodes")
-
             get_series_episodes(
                 urllib.parse.unquote_plus(params["url"]), settings, HANDLE)
         elif action == 'getepisodedetails' and 'url' in params:
@@ -61,7 +60,7 @@ def run():
         elif action == 'getartwork' and 'id' in params:
             logger.debug("about to call get artworks")
             get_artworks(urllib.parse.unquote_plus(
-                params["id"]), IMAGES_URL, settings, HANDLE)
+                params["id"]), settings, HANDLE)
         elif params['action'].lower() == 'nfourl':
             logger.debug('performing nfourl action')
             get_show_id_from_nfo(params['nfo'], settings, HANDLE)
