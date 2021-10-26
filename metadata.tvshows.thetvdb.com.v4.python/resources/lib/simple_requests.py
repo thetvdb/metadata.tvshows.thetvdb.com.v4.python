@@ -137,7 +137,9 @@ def _create_request(url_structure, params=None, data=None, headers=None, auth=No
     if params is not None:
         separator = '&' if query else ''
         query += separator + urlencode(params)
-    full_url = url_structure.scheme + '://' + url_structure.netloc + url_structure.path + '?' + query
+    full_url = url_structure.scheme + '://' + url_structure.netloc + url_structure.path
+    if query:
+        full_url += '?' + query
     prepared_headers = HTTPMessage()
     if headers is not None:
         prepared_headers.update(headers)
