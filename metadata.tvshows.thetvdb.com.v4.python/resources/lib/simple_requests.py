@@ -120,11 +120,12 @@ class Response:
         return self._text
 
     def json(self) -> Optional[Union[Dict[str, Any], List[Any]]]:
-        if 'application/json' in self.headers.get('Content-Type', ''):
+        try:
             if self._json is self.NULL:
                 self._json = _json.loads(self.content)
             return self._json
-        raise ValueError('Response content is not a valid JSON')
+        except ValueError as exc:
+            raise ValueError('Response content is not a valid JSON') from exc
 
     def raise_for_status(self) -> None:
         if not self.ok:
