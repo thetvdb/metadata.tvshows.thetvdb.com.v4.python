@@ -21,12 +21,10 @@ class Auth:
 
     def __init__(self, url, apikey, pin="", **kwargs):
         loginInfo = {"apikey": apikey}
-        if not pin:
+        if pin:
             loginInfo["pin"] = pin
             loginInfo["apikey"] = apikey_with_pin
-
-        for key, value in kwargs.items():
-            loginInfo[key] = value
+        loginInfo.update(kwargs)
         logger.debug("body in auth call")
         logger.debug(loginInfo)
         headers = {

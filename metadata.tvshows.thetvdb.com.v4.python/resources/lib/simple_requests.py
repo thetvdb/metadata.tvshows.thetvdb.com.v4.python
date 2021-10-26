@@ -56,7 +56,9 @@ __all__ = [
 
 
 class RequestException(IOError):
-    pass
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class ConnectionError(RequestException):
@@ -101,6 +103,9 @@ class Response:
     def __str__(self) -> str:
         return f'<Response [{self.status_code}]>'
 
+    def __repr__(self) -> str:
+        return self.__str__()
+
     @property
     def ok(self) -> bool:
         return self.status_code < 400
@@ -129,9 +134,9 @@ class Response:
 def _create_request(url_structure, params=None, data=None, headers=None, auth=None, json=None):
     query = url_structure.query
     if params is not None:
-        separator = '&' if query else '?'
+        separator = '&' if query else ''
         query += separator + urlencode(params)
-    full_url = url_structure.scheme + '://' + url_structure.netloc + url_structure.path + query
+    full_url = url_structure.scheme + '://' + url_structure.netloc + url_structure.path + '?' + query
     prepared_headers = HTTPMessage()
     if headers is not None:
         prepared_headers.update(headers)
