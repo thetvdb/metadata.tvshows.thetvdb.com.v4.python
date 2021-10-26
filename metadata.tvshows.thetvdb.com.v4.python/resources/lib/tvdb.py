@@ -1,8 +1,5 @@
 import enum
-import json
-import urllib
 import urllib.parse
-import urllib.request
 
 from resources.lib import simple_requests as requests
 from resources.lib.utils import logger
@@ -10,12 +7,13 @@ from resources.lib.utils import logger
 apikey = "1fb0f305-6011-4edd-a827-07440421fed9"
 apikey_with_pin = "41080b3a-7506-478e-b616-2775663788b6"
 
+USER_AGENT = 'TheTVDB v.4 TV Scraper for Kodi'
+
 
 class ArtworkType(enum.IntEnum):
     BANNER = 1
     POSTER = 2
     FANART = 3
-    SEASON_POSTER = 7
 
 
 class Auth:
@@ -23,7 +21,7 @@ class Auth:
 
     def __init__(self, url, apikey, pin="", **kwargs):
         loginInfo = {"apikey": apikey}
-        if pin != "":
+        if not pin:
             loginInfo["pin"] = pin
             loginInfo["apikey"] = apikey_with_pin
 
@@ -31,12 +29,14 @@ class Auth:
             loginInfo[key] = value
         logger.debug("body in auth call")
         logger.debug(loginInfo)
-        loginInfoBytes = json.dumps(loginInfo, indent=2).encode('utf-8')
-        req = urllib.request.Request(url, data=loginInfoBytes)
-        req.add_header("Content-Type", "application/json")
-        with urllib.request.urlopen(req, data=loginInfoBytes) as response:
-            res = json.load(response)
-            self.token = res["data"]["token"]
+        headers = {
+            'User-Agent': USER_AGENT,
+            'Accept': 'application/json',
+        }
+        response = requests.post(url, headers=headers, json=loginInfo)
+        if not response.ok:
+            response.raise_for_status()
+        self.token = response.json()['data']['token']
 
     def get_token(self):
         return self.token
@@ -48,12 +48,17 @@ class Request:
         self.cache = {}
 
     def make_api_request(self, url):
-        logger.debug("about to make request to url")
+        logger.debug(f"about to make request to url {url}")
         logger.debug(url)
         data = self.cache.get(url, None)
         if data:
             return data
-        response = requests.get(url, headers={'Authorization': f'Bearer {self.auth_token}'})
+        headers = {
+            'User-Agent': USER_AGENT,
+            'Accept': 'application/json',
+            'Authorization': f'Bearer {self.auth_token}'
+        }
+        response = requests.get(url, headers=headers)
         if not response.ok:
             response.raise_for_status()
         data = response.json()['data']
@@ -62,7 +67,12 @@ class Request:
 
     @staticmethod
     def make_web_request(url):
-        response = requests.get(url)
+        logger.debug(f"about to make request to url {url}")
+        headers = {
+            'User-Agent': USER_AGENT,
+            'Accept': 'text/html',
+        }
+        response = requests.get(url, headers=headers)
         if not response.ok:
             response.raise_for_status()
         return response.text
