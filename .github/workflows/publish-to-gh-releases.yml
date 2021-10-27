@@ -1,0 +1,17 @@
+name: Publish to Github Releases
+
+on:
+  push:
+    tags:
+      - '*'
+      - '!*-beta'
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Insert API tokens
+      run: |
+        echo "Hello World!"
