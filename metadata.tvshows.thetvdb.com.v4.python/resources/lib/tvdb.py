@@ -4,8 +4,8 @@ import urllib.parse
 from resources.lib import simple_requests as requests
 from resources.lib.utils import logger
 
-apikey = "1fb0f305-6011-4edd-a827-07440421fed9"
-apikey_with_pin = "41080b3a-7506-478e-b616-2775663788b6"
+apikey = "#*apikey*#"
+apikey_with_pin = "#*apikey_with_pin*#"
 
 USER_AGENT = 'TheTVDB v.4 TV Scraper for Kodi'
 
