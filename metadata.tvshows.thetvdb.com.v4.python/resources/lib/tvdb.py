@@ -455,7 +455,7 @@ class TVDB:
         overview = trans.get("overview") or ''
         name = trans.get("name") or ''
         if not (overview and name) and trans['language'] != 'eng':
-            english_info = self.get_series_translation(id, 'eng')
+            english_info = self.get_episode_translation(id, 'eng')
             if not overview:
                 overview = english_info.get('overview') or ''
             if not name:
