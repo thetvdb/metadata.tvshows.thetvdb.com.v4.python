@@ -416,7 +416,7 @@ class TVDB:
             url = self.url.series_season_episodes_url(id, season_type, page)
             res = self.request.make_api_request(url).get("episodes", [])
             page += 1
-            if len(res) == 0:
+            if not res:
                 break
             episodes.extend(res)
         return episodes
@@ -425,10 +425,9 @@ class TVDB:
         settings = settings or {}
         series = self.get_series_extended(id)
         lang = get_language(settings)
-        translations = None
         try:
             translations = self.get_series_translation(id, lang)
-        except:
+        except requests.HTTPError:
             translations = self.get_series_translation(id, "eng")
         overview = translations.get("overview", "")
         series["overview"] = overview
@@ -443,10 +442,9 @@ class TVDB:
     def get_episode_details_api(self, id, settings):
         ep = self.get_episode_extended(id)
         lang = get_language(settings)
-        trans = None
         try:
             trans = self.get_episode_translation(id, lang)
-        except:
+        except requests.HTTPError:
             trans = self.get_episode_translation(id, "eng")
         overview = trans.get("overview", "")
         ep["overview"] = overview
