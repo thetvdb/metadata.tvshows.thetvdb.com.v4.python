@@ -4,6 +4,7 @@ import xbmcplugin
 from . import tvdb
 from .nfo import parse_episode_guide_url
 from .utils import logger
+from .series import get_unique_ids
 
 
 # add the episodes of a series to the list
@@ -42,9 +43,9 @@ def get_series_episodes(id, settings, handle):
             'premiered': year_str,
             'date': year_str,
             "year": year,
+            'season': ep['seasonNumber'],
+            'episode': ep['number'],
         }
-        details['season'] = ep['seasonNumber']
-        details['episode'] = ep['number']
         logger.debug("details in episodes.py")
         logger.debug(details)
         liz.setInfo('video', details)
@@ -97,7 +98,8 @@ def get_episode_details(id, settings, handle):
     logger.debug(ep)
     liz.setInfo('video', details)
 
-    liz.setUniqueIDs({'tvdb': ep["id"]}, 'tvdb')
+    unique_ids = get_unique_ids(ep)
+    liz.setUniqueIDs(unique_ids, 'tvdb')
 
     if ep.get("image", "") != "":
         liz.addAvailableArtwork(ep["image"])
