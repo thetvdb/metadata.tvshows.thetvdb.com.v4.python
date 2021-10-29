@@ -55,11 +55,6 @@ def get_series_episodes(id, settings, handle):
             listitem=liz, 
             isFolder=True
             )
-    xbmcplugin.setResolvedUrl(
-        handle=handle, 
-        succeeded=True, 
-        listitem=liz
-        )
 
 # get the details of the found episode
 
