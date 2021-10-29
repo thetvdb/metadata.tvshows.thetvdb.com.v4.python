@@ -116,17 +116,18 @@ def get_episode_cast(ep):
     cast["directors"] = directors
     return cast
 
+
 def get_rating(ep):
     ratings = ep.get("contentRatings", [])
-    rating = ""
-    for r in ratings:
-        if r["country"] == "usa":
-            rating = r["name"]
-    
-    if rating == "" and len(ratings) != 0:
-        rating = ratings[0]["name"]
-    
+    rating = ''
+    if len(ratings) == 1:
+        rating = ratings[0]['country'] + ': ' + ratings[0]["name"]
+    if not rating:
+        for r in ratings:
+            if r["country"] == "usa":
+                rating = 'USA: ' + r["name"]
     return rating
+
 
 def get_tags(ep):
     tags = []
