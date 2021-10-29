@@ -429,14 +429,14 @@ class TVDB:
             translation = self.get_series_translation(id, lang)
         except requests.HTTPError:
             translation = self.get_series_translation(id, "eng")
-        overview = translation.get("overview", "")
-        name = translation.get("name", "")
-        if translation.get('language') != 'eng' and not (overview and name):
+        overview = translation.get("overview") or ''
+        name = translation.get("name") or ''
+        if not (overview and name) and translation.get('language') != 'eng':
             english_info = self.get_series_translation(id, 'eng')
             if not overview:
-                overview = english_info.get('overview', '')
+                overview = english_info.get('overview') or ''
             if not name:
-                name = english_info.get('name', '')
+                name = english_info.get('name') or ''
         series["overview"] = overview
         series["name"] = name
         return series
