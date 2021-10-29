@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import xbmcgui
 import xbmcplugin
 
@@ -72,7 +74,6 @@ def get_episode_details(id, settings, handle):
     rating = get_rating(ep)
     tags = get_tags(ep)
 
-    
     details = {
         'title': ep["name"],
         'plot': ep["overview"],
@@ -95,9 +96,11 @@ def get_episode_details(id, settings, handle):
 
     unique_ids = get_unique_ids(ep)
     liz.setUniqueIDs(unique_ids, 'tvdb')
-
-    if ep.get("image", "") != "":
-        liz.addAvailableArtwork(ep["image"])
+    guest_stars = cast['guest_stars']
+    if guest_stars:
+        liz.setCast(guest_stars)
+    if ep.get("image"):
+        liz.addAvailableArtwork(ep["image"], 'thumb')
     xbmcplugin.setResolvedUrl(
         handle=handle, 
         succeeded=True, 
@@ -105,15 +108,19 @@ def get_episode_details(id, settings, handle):
 
 
 def get_episode_cast(ep):
-    cast = {}
-    characters = ep.get("characters", None)
-    if not characters:
-        return {"writers": [], "directors": []}
-    writers = [char["personName"] for char in ep.get("characters", []) if char["peopleType"] == "Writer"]   
-    directors = [char["personName"] for char in ep.get("characters", []) if char["peopleType"] == "Director"]   
-
-    cast["writers"] = writers
-    cast["directors"] = directors
+    cast = defaultdict(list)
+    characters = ep.get('characters')
+    if characters:
+        for char in characters:
+            if char['peopleType'] == 'Writer':
+                cast['writers'].append(char['personName'])
+            elif char['peopleType'] == 'Director':
+                cast['writers'].append(char['personName'])
+            elif char['peopleType'] == 'Guest Star':
+                cast['guest_stars'].append({
+                    'name': char['personName'],
+                    'thumbnail': char.get('image') or '',
+                })
     return cast
 
 
