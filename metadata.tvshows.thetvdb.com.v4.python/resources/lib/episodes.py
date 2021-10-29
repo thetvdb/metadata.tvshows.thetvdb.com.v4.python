@@ -103,7 +103,7 @@ def get_episode_details(id, settings, handle):
         liz.addAvailableArtwork(ep["image"], 'thumb')
     xbmcplugin.setResolvedUrl(
         handle=handle, 
-        succeeded=True, 
+        succeeded=True,
         listitem=liz)
 
 
