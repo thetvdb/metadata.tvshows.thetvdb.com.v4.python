@@ -11,25 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout code and set a version variable
         uses: actions/checkout@v2
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/*/}
       - name: Insert API tokens
         run: |
           sed s/#*apikey*#/${{ secrets.APIKEY }}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
           sed s/#*apikey_with_pin*#/${{ secrets.APIKEY_WITH_PIN}}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
       - name: Create a ZIP installable file
         run: |
-          zip -r metadata.tvshows.thetvdb.com.v4.python-${{ github.ref }}.zip metadata.tvshows.thetvdb.com.v4.python
+          zip -r metadata.tvshows.thetvdb.com.v4.python-$VERSION.zip metadata.tvshows.thetvdb.com.v4.python
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: $VERSION
+          release_name: Release $VERSION
           body: |
-            Version ${{ github.ref }}
+            Version $VERSION
           draft: false
           prerelease: false
       - name: Upload Release Asset
@@ -39,6 +40,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./metadata.tvshows.thetvdb.com.v4.python-${{ github.ref }}.zip
-          asset_name: metadata.tvshows.thetvdb.com.v4.python-${{ github.ref }}.zip
+          asset_path: ./metadata.tvshows.thetvdb.com.v4.python-$VERSION.zip
+          asset_name: metadata.tvshows.thetvdb.com.v4.python-$VERSION.zip
           asset_content_type: application/zip
