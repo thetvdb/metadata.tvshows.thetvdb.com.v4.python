@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code and set a version variable
+      - name: Checkout code
         uses: actions/checkout@v2
+      - name: Set a version variable
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/*/}
       - name: Insert API tokens
         run: |
