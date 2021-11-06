@@ -20,8 +20,8 @@ jobs:
           echo ${{ steps.set_version.outputs.VERSION }}
       - name: Insert API tokens
         run: |
-          sed s/%apikey%/${{ secrets.API_KEY }}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py > metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
-          sed s/%apikey_with_pin%/${{ secrets.API_KEY_WITH_PIN}}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py > metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
+          sed -i s/%apikey%/${{ secrets.API_KEY }}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
+          sed -i s/%apikey_with_pin%/${{ secrets.API_KEY_WITH_PIN}}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
       - name: Create a ZIP installable file
         run: |
           zip -r metadata.tvshows.thetvdb.com.v4.python-${{ steps.set_version.outputs.VERSION }}.zip metadata.tvshows.thetvdb.com.v4.python
