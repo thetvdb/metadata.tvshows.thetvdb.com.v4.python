@@ -14,26 +14,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set a version variable
+        id: set_version
         run: |
           echo ::set-output name=VERSION::${GITHUB_REF#refs/*/}
-          echo ${{VERSION}}
+          echo ${{ steps.set_version.outputs.VERSION }}
       - name: Insert API tokens
         run: |
           sed s/#*apikey*#/${{ secrets.APIKEY }}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
           sed s/#*apikey_with_pin*#/${{ secrets.APIKEY_WITH_PIN}}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
       - name: Create a ZIP installable file
         run: |
-          zip -r metadata.tvshows.thetvdb.com.v4.python-${{VERSION}}.zip metadata.tvshows.thetvdb.com.v4.python
+          zip -r metadata.tvshows.thetvdb.com.v4.python-${{ steps.set_version.outputs.VERSION }}.zip metadata.tvshows.thetvdb.com.v4.python
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{VERSION}}
-          release_name: Release ${{VERSION}}
+          tag_name: ${{ steps.set_version.outputs.VERSION }}
+          release_name: Release ${{ steps.set_version.outputs.VERSION }}
           body: |
-            Version ${{VERSION}}
+            Version ${{ steps.set_version.outputs.VERSION }}
           draft: false
           prerelease: false
       - name: Upload Release Asset
@@ -43,6 +44,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./metadata.tvshows.thetvdb.com.v4.python-${{VERSION}}.zip
-          asset_name: metadata.tvshows.thetvdb.com.v4.python-${{VERSION}}.zip
+          asset_path: ./metadata.tvshows.thetvdb.com.v4.python-${{ steps.set_version.outputs.VERSION }}.zip
+          asset_name: metadata.tvshows.thetvdb.com.v4.python-${{ steps.set_version.outputs.VERSION }}.zip
           asset_content_type: application/zip
