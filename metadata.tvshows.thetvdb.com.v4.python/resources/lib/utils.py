@@ -3,8 +3,8 @@ import uuid
 import xbmc
 from xbmcaddon import Addon
 
-ADDON_ID = 'metadata.tvshows.thetvdb.v4.python'
 ADDON = Addon()
+ADDON_ID = ADDON.getAddonInfo('id')
 
 
 class logger:
