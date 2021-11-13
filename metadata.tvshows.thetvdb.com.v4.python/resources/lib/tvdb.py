@@ -2,7 +2,8 @@ import enum
 import urllib.parse
 
 from resources.lib import simple_requests as requests
-from resources.lib.utils import logger
+from resources.lib.constants import LANGUAGES_MAP
+from resources.lib.utils import logger, ADDON
 
 apikey = "%apikey%"
 apikey_with_pin = "%apikey_with_pin%"
@@ -424,9 +425,9 @@ class TVDB:
     def get_series_details_api(self, id, settings=None) -> dict:
         settings = settings or {}
         series = self.get_series_extended(id)
-        lang = get_language(settings)
+        language = get_language(settings)
         try:
-            translation = self.get_series_translation(id, lang)
+            translation = self.get_series_translation(id, language)
         except requests.HTTPError:
             translation = self.get_series_translation(id, "eng")
         overview = translation.get("overview") or ''
@@ -447,9 +448,9 @@ class TVDB:
 
     def get_episode_details_api(self, id, settings):
         ep = self.get_episode_extended(id)
-        lang = get_language(settings)
+        language = get_language(settings)
         try:
-            trans = self.get_episode_translation(id, lang)
+            trans = self.get_episode_translation(id, language)
         except requests.HTTPError:
             trans = self.get_episode_translation(id, "eng")
         overview = trans.get("overview") or ''
@@ -465,8 +466,12 @@ class TVDB:
         return ep
 
 
-def get_language(settings):
-    return settings.get("language", "eng")
+def get_language(path_settings):
+    language = path_settings.get('language')
+    if language is None:
+        language = ADDON.getSetting('language') or 'eng'
+    language_code = LANGUAGES_MAP.get(language, 'eng')
+    return language_code
 
 
 def get_season_type(settings):
