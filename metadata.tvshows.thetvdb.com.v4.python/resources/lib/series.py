@@ -92,7 +92,7 @@ def get_series_details(id, settings, handle):
     unique_ids = get_unique_ids(show)
     liz.setUniqueIDs(unique_ids, 'tvdb')
 
-    language = settings.get('language', 'eng')
+    language = tvdb.get_language(settings)
     add_artworks(show, liz, language)
     xbmcplugin.setResolvedUrl(
         handle=handle, 

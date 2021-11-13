@@ -8,9 +8,7 @@ sys.path.append(str(project_dir))
 
 from tvdb import TVDB, client, get_artworks_from_show
 
-
-
-apikey = "1db81d90-3aa9-4cee-a93d-cc9d4f1925a5"
+apikey = "%apikey%"
 
 
 class TestTVDB(unittest.TestCase):
@@ -35,7 +33,7 @@ class TestTVDB(unittest.TestCase):
 
     def test_get_series_details(self):
         c = client()
-        settings = {'language': 'eng'}
+        settings = {'language': 'English'}
         show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
         overview = show.get("overview", None)
@@ -45,7 +43,7 @@ class TestTVDB(unittest.TestCase):
         self.assertIsNotNone(name)
         self.assertNotEqual(name, "")
         self.assertEqual(name, "Lost")
-        settings = {'language': 'spa'}
+        settings = {'language': 'Spanish'}
         show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
         overview = show.get("overview", None)
@@ -65,7 +63,7 @@ class TestTVDB(unittest.TestCase):
 
     def test_get_artwork(self):
         c = client()
-        settings = {'language': 'eng'}
+        settings = {'language': 'English'}
         show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
         artworks = get_artworks_from_show(show)
@@ -109,9 +107,6 @@ class TestTVDB(unittest.TestCase):
         image = ep.get("image", None)
         self.assertIsNotNone(image)
         self.assertNotEqual(image, "")
-
-
-
 
 
 if __name__ == '__main__':

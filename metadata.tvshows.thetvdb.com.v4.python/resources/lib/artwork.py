@@ -1,7 +1,7 @@
 import xbmcgui
 import xbmcplugin
 
-from .tvdb import client, get_artworks_from_show
+from .tvdb import client, get_artworks_from_show, get_language
 
 ART_LENGTH = 10
 
@@ -39,6 +39,6 @@ def get_artworks(id, settings, handle):
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
     liz = xbmcgui.ListItem(id, offscreen=True)
-    language = settings.get('language', 'eng')
+    language = get_language(settings)
     add_artworks(show, liz, language)
     xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
