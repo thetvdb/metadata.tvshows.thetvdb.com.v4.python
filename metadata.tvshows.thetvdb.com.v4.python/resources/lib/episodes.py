@@ -26,7 +26,7 @@ def get_series_episodes(id, settings, handle):
             id = parse_result.show_id
             logger.debug(f'Changed show id to {id}')
 
-    client = tvdb.client(settings)
+    client = tvdb.Client(settings)
     episodes = client.get_series_episodes_api(id, settings)
 
     if not episodes:
@@ -63,7 +63,7 @@ def get_series_episodes(id, settings, handle):
 
 def get_episode_details(id, settings, handle):
     logger.debug(f'Find info of episode with id {id}')
-    client = tvdb.client(settings)
+    client = tvdb.Client(settings)
     ep = client.get_episode_details_api(id, settings)
     if not ep:
         xbmcplugin.setResolvedUrl(

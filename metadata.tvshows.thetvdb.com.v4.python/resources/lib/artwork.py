@@ -1,7 +1,7 @@
 import xbmcgui
 import xbmcplugin
 
-from .tvdb import client, get_artworks_from_show, get_language
+from .tvdb import Client, get_artworks_from_show, get_language
 
 ART_LENGTH = 10
 
@@ -31,7 +31,7 @@ def add_artworks(show, liz, language):
 
 
 def get_artworks(id, settings, handle):
-    tvdb_client = client(settings)
+    tvdb_client = Client(settings)
 
     show = tvdb_client.get_series_details_api(id, settings)
     if not show:

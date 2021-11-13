@@ -479,7 +479,7 @@ def get_season_type(settings):
     return int(season_type_str)
 
 
-class client(object):
+class Client(object):
     _instance = None
 
     def __new__(cls, settings=None):

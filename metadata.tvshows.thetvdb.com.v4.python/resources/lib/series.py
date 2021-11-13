@@ -15,7 +15,7 @@ def search_series(title, settings, handle, year=None) -> None:
     # add the found shows to the list
     logger.debug(f'Searching for TV show "{title}"')
 
-    tvdb_client = tvdb.client(settings)
+    tvdb_client = tvdb.Client(settings)
     if year is None:
         search_results = tvdb_client.search(title, type="series", limit=10)
     else:
@@ -44,7 +44,7 @@ def search_series(title, settings, handle, year=None) -> None:
 def get_series_details(id, settings, handle):
     # get the details of the found series
     logger.debug(f'Find info of tvshow with id {id}')
-    tvdb_client = tvdb.client(settings)
+    tvdb_client = tvdb.Client(settings)
 
     show = tvdb_client.get_series_details_api(id, settings)
     if not show:

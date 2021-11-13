@@ -6,7 +6,7 @@ import unittest
 project_dir = pathlib.Path('.').resolve().parent.parent
 sys.path.append(str(project_dir))
 
-from tvdb import TVDB, client, get_artworks_from_show
+from tvdb import TVDB, Client, get_artworks_from_show
 
 apikey = "%apikey%"
 
@@ -27,12 +27,12 @@ class TestTVDB(unittest.TestCase):
         self.assertEqual(first.get("tvdb_id"), "73739")
 
     def test_client(self):
-        c1 = client()
-        c2 = client()
+        c1 = Client()
+        c2 = Client()
         self.assertEqual(c1, c2)
 
     def test_get_series_details(self):
-        c = client()
+        c = Client()
         settings = {'language': 'English'}
         show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
@@ -56,13 +56,13 @@ class TestTVDB(unittest.TestCase):
         self.assertEqual(name, "Perdidos")
 
     def test_get_series_episodes_api(self):
-        c = client()
+        c = Client()
         eps = c.get_series_episodes_api(
             121361, {})
         self.assertNotEqual(len(eps), 0)
 
     def test_get_artwork(self):
-        c = client()
+        c = Client()
         settings = {'language': 'English'}
         show = c.get_series_details_api(73739, settings)
         self.assertIsNotNone(show)
@@ -92,7 +92,7 @@ class TestTVDB(unittest.TestCase):
             last_score = score
     
     def test_get_episode_details_api(self):
-        c = client()
+        c = Client()
         ep = c.get_episode_details_api(3254641, {})
         self.assertIsNotNone(ep)
 
