@@ -3,28 +3,24 @@ import xbmcplugin
 
 from .tvdb import Client, get_artworks_from_show, get_language
 
-ART_LENGTH = 10
+MAX_IMAGES_NUMBER = 10
 
 
 def add_artworks(show, liz, language):
     
     artworks = get_artworks_from_show(show, language)
-    posters = artworks.get("posters", [])[:ART_LENGTH]
-    banners = artworks.get("banners", [])[:ART_LENGTH]
-    fanarts = artworks.get("fanarts", [])[:ART_LENGTH]
-    season_posters = artworks.get("season_posters", [])
+    fanarts = artworks.pop("fanarts")
+    season_posters = artworks.pop("season_posters")
 
-    for poster in posters:
-        liz.addAvailableArtwork(poster["image"], 'poster')
+    for art_type, images in artworks.items():
+        for image in images[:MAX_IMAGES_NUMBER]:
+            liz.addAvailableArtwork(image['image'], art_type)
 
-    for banner in banners:
-        liz.addAvailableArtwork(banner["image"], 'banner')
-
-    for (image, season_number) in season_posters:
+    for image, season_number in season_posters:
         liz.addAvailableArtwork(image, 'poster', season=season_number)
 
     fanart_items = []
-    for fanart in fanarts:
+    for fanart in fanarts[:MAX_IMAGES_NUMBER]:
         fanart_items.append(
             {'image': fanart["image"], 'preview': fanart["thumbnail"]})
     liz.setAvailableFanart(fanart_items)

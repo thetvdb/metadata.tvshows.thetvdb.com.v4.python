@@ -14,7 +14,10 @@ USER_AGENT = 'TheTVDB v.4 TV Scraper for Kodi'
 class ArtworkType(enum.IntEnum):
     BANNER = 1
     POSTER = 2
-    FANART = 3
+    BACKGROUND = 3
+    ICON = 5
+    CLEARART = 22
+    CLEARLOGO = 23
 
 
 class Auth:
@@ -509,22 +512,36 @@ def get_artworks_from_show(show: dict, language: str = 'eng'):
     banners = []
     posters = []
     fanarts = []
+    icons = []
+    cleararts = []
+    clearlogos = []
     for art in artworks:
         art_type = art.get('type')
         if art_type == ArtworkType.BANNER:
             banners.append(art)
         elif art_type == ArtworkType.POSTER:
             posters.append(art)
-        elif art_type == ArtworkType.FANART:
+        elif art_type == ArtworkType.BACKGROUND:
             fanarts.append(art)
+        elif art_type == ArtworkType.ICON:
+            icons.append(art)
+        elif art_type == ArtworkType.CLEARART:
+            cleararts.append(art)
+        elif art_type == ArtworkType.CLEARLOGO:
+            clearlogos.append(art)
     banners.sort(key=sorter, reverse=True)
     posters.sort(key=sorter, reverse=True)
     fanarts.sort(key=sorter, reverse=True)
-    season_posters = [(season.get("image", ""), season.get("number", 0)) for season in show.get("seasons", [])]
+    season_posters = [(season.get("image", ""), season.get("number", 0))
+                      for season in show.get("seasons", [])]
     artwork_dict = {
-        "banners": banners,
-        "posters": posters,
-        "fanarts":fanarts,
-        "season_posters": season_posters,
+        'banner': banners,
+        'poster': posters,
+        'icon': icons,
+        'clearart': cleararts,
+        'clearlogo': clearlogos,
+
+        'fanarts': fanarts,
+        'season_posters': season_posters,
     }
     return artwork_dict
