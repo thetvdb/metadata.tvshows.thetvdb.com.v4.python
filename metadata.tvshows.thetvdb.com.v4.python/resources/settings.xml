@@ -8,59 +8,61 @@
 					<default>English</default>
 					<constraints>
 						<options>
-							<option>Afar</option>
 							<option>Abkhaz</option>
+							<option>Afar</option>
 							<option>Afrikaans</option>
 							<option>Akan</option>
+							<option>Albanian</option>
 							<option>Amharic</option>
 							<option>Arabic</option>
 							<option>Aragonese</option>
+							<option>Armenian</option>
 							<option>Assamese</option>
 							<option>Avaric</option>
 							<option>Avestan</option>
 							<option>Aymara</option>
 							<option>Azerbaijani</option>
-							<option>Bashkir</option>
 							<option>Bambara</option>
+							<option>Bashkir</option>
+							<option>Basque</option>
 							<option>Belarusian</option>
 							<option>Bengali</option>
 							<option>Bihari</option>
 							<option>Bislama</option>
-							<option>Tibetan Standard</option>
 							<option>Bosnian</option>
 							<option>Breton</option>
 							<option>Bulgarian</option>
+							<option>Burmese</option>
 							<option>Catalan</option>
-							<option>Czech</option>
 							<option>Chamorro</option>
 							<option>Chechen</option>
-							<option>Old Church Slavonic</option>
+							<option>Chichewa</option>
+							<option>Chinese - Cantonese</option>
+							<option>Chinese - China</option>
+							<option>Chinese - Taiwan</option>
 							<option>Chuvash</option>
 							<option>Cornish</option>
 							<option>Corsican</option>
 							<option>Cree</option>
-							<option>Welsh</option>
+							<option>Croatian</option>
+							<option>Czech</option>
 							<option>Danish</option>
-							<option>German</option>
 							<option>Divehi</option>
+							<option>Dutch</option>
 							<option>Dzongkha</option>
-							<option>Greek</option>
 							<option>English</option>
 							<option>Esperanto</option>
 							<option>Estonian</option>
-							<option>Basque</option>
 							<option>Ewe</option>
 							<option>Faroese</option>
-							<option>Persian</option>
 							<option>Fijian</option>
 							<option>Finnish</option>
 							<option>French</option>
-							<option>Western Frisian</option>
 							<option>Fula</option>
-							<option>Scottish Gaelic</option>
-							<option>Irish</option>
 							<option>Galician</option>
-							<option>Manx</option>
+							<option>Georgian</option>
+							<option>German</option>
+							<option>Greek</option>
 							<option>Guaraní</option>
 							<option>Gujarati</option>
 							<option>Haitian</option>
@@ -69,112 +71,111 @@
 							<option>Herero</option>
 							<option>Hindi</option>
 							<option>Hiri Motu</option>
-							<option>Croatian</option>
 							<option>Hungarian</option>
-							<option>Armenian</option>
-							<option>Igbo</option>
-							<option>Ido</option>
-							<option>Nuosu</option>
-							<option>Inuktitut</option>
-							<option>Interlingue</option>
-							<option>Interlingua</option>
-							<option>Indonesian</option>
-							<option>Inupiaq</option>
 							<option>Icelandic</option>
+							<option>Ido</option>
+							<option>Igbo</option>
+							<option>Indonesian</option>
+							<option>Interlingua</option>
+							<option>Interlingue</option>
+							<option>Inuktitut</option>
+							<option>Inupiaq</option>
+							<option>Irish</option>
 							<option>Italian</option>
-							<option>Javanese</option>
 							<option>Japanese</option>
+							<option>Javanese</option>
 							<option>Kalaallisut</option>
 							<option>Kannada</option>
-							<option>Kashmiri</option>
-							<option>Georgian</option>
 							<option>Kanuri</option>
+							<option>Kashmiri</option>
 							<option>Kazakh</option>
 							<option>Khmer</option>
 							<option>Kikuyu</option>
 							<option>Kinyarwanda</option>
 							<option>Kirghiz</option>
+							<option>Kirundi</option>
 							<option>Komi</option>
 							<option>Kongo</option>
 							<option>Korean</option>
-							<option>Kwanyama</option>
 							<option>Kurdish</option>
+							<option>Kwanyama</option>
 							<option>Lao</option>
 							<option>Latin</option>
 							<option>Latvian</option>
 							<option>Limburgish</option>
 							<option>Lingala</option>
 							<option>Lithuanian</option>
-							<option>Luxembourgish</option>
 							<option>Luba-Katanga</option>
 							<option>Luganda</option>
-							<option>Marshallese</option>
-							<option>Malayalam</option>
-							<option>Marathi</option>
+							<option>Luxembourgish</option>
 							<option>Macedonian</option>
 							<option>Malagasy</option>
+							<option>Malay</option>
+							<option>Malayalam</option>
 							<option>Maltese</option>
+							<option>Manx</option>
+							<option>Marathi</option>
+							<option>Marshallese</option>
 							<option>Mongolian</option>
 							<option>Māori</option>
-							<option>Malay</option>
-							<option>Burmese</option>
 							<option>Nauru</option>
 							<option>Navajo</option>
-							<option>South Ndebele</option>
-							<option>North Ndebele</option>
 							<option>Ndonga</option>
 							<option>Nepali</option>
-							<option>Dutch</option>
+							<option>North Ndebele</option>
+							<option>Northern Sami</option>
 							<option>Norwegian</option>
-							<option>Chichewa</option>
+							<option>Nuosu</option>
 							<option>Occitan</option>
 							<option>Ojibwe</option>
+							<option>Old Church Slavonic</option>
 							<option>Oriya</option>
 							<option>Oromo</option>
 							<option>Ossetian</option>
 							<option>Panjabi</option>
-							<option>Pāli</option>
-							<option>Polish</option>
-							<option>Portuguese - Portugal</option>
-							<option>Portuguese - Brazil</option>
 							<option>Pashto</option>
+							<option>Persian</option>
+							<option>Polish</option>
+							<option>Portuguese - Brazil</option>
+							<option>Portuguese - Portugal</option>
+							<option>Pāli</option>
 							<option>Quechua</option>
-							<option>Romansh</option>
 							<option>Romanian</option>
-							<option>Kirundi</option>
+							<option>Romansh</option>
 							<option>Russian</option>
+							<option>Samoan</option>
 							<option>Sango</option>
 							<option>Sanskrit</option>
+							<option>Sardinian</option>
+							<option>Scottish Gaelic</option>
+							<option>Serbian</option>
+							<option>Shona</option>
+							<option>Sindhi</option>
 							<option>Sinhala</option>
 							<option>Slovak</option>
 							<option>Slovene</option>
-							<option>Northern Sami</option>
-							<option>Samoan</option>
-							<option>Shona</option>
-							<option>Sindhi</option>
 							<option>Somali</option>
+							<option>South Ndebele</option>
 							<option>Southern Sotho</option>
 							<option>Spanish</option>
-							<option>Albanian</option>
-							<option>Sardinian</option>
-							<option>Serbian</option>
-							<option>Swati</option>
 							<option>Sundanese</option>
 							<option>Swahili</option>
+							<option>Swati</option>
 							<option>Swedish</option>
+							<option>Tagalog</option>
 							<option>Tahitian</option>
+							<option>Tajik</option>
 							<option>Tamil</option>
 							<option>Tatar</option>
 							<option>Telugu</option>
-							<option>Tajik</option>
-							<option>Tagalog</option>
 							<option>Thai</option>
+							<option>Tibetan Standard</option>
 							<option>Tigrinya</option>
 							<option>Tonga</option>
-							<option>Tswana</option>
 							<option>Tsonga</option>
-							<option>Turkmen</option>
+							<option>Tswana</option>
 							<option>Turkish</option>
+							<option>Turkmen</option>
 							<option>Twi</option>
 							<option>Uighur</option>
 							<option>Ukrainian</option>
@@ -184,14 +185,13 @@
 							<option>Vietnamese</option>
 							<option>Volapük</option>
 							<option>Walloon</option>
+							<option>Welsh</option>
+							<option>Western Frisian</option>
 							<option>Wolof</option>
 							<option>Xhosa</option>
 							<option>Yiddish</option>
 							<option>Yoruba</option>
-							<option>Chinese - Cantonese</option>
 							<option>Zhuang</option>
-							<option>Chinese - China</option>
-							<option>Chinese - Taiwan</option>
 							<option>Zulu</option>
 						</options>
 					</constraints>
