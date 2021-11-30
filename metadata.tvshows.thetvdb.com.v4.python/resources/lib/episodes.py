@@ -35,19 +35,16 @@ def get_series_episodes(id, settings, handle):
         return
     for ep in episodes:
         liz = xbmcgui.ListItem(ep['name'], offscreen=True)
-        year = None 
-        year_str = ep.get("aired", "")
-        if year_str:
-            year = int(year_str.split("-")[0])
-
         details = {
             'title': ep['name'],
-            'premiered': year_str,
-            'date': year_str,
-            "year": year,
             'season': ep['seasonNumber'],
             'episode': ep['number'],
         }
+        date_string = ep.get("aired")
+        if date_string:
+            year = int(date_string.split("-")[0])
+            details['premiered'] = details['date'] = date_string
+            details['year'] = year
         logger.debug("details in episodes.py")
         logger.debug(details)
         liz.setInfo('video', details)
