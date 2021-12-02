@@ -5,6 +5,7 @@ import xbmcplugin
 
 from . import tvdb
 from .artwork import add_artworks
+from .tvdb import get_language
 from .utils import logger
 
 SUPPORTED_REMOTE_IDS = {
@@ -26,12 +27,23 @@ def search_series(title, settings, handle, year=None) -> None:
 
     if search_results is None:
         return
-    
-    items = []
-    for show in search_results: 
-        nameAndYear = f"{show['name']}" if not show.get('year', None) else f"{show['name']} ({show['year']})"
 
-        liz = xbmcgui.ListItem(nameAndYear, offscreen=True)
+    language = get_language(settings)
+    items = []
+    for show in search_results:
+        show_name = None
+        translations = show.get('translations') or {}
+        if translations:
+            show_name = translations.get(language)
+            if not show_name:
+                show_name = translations.get('eng')
+        if not show_name:
+            show_name = show['name']
+        year = show.get('year')
+        if year:
+            show_name += f' ({year})'
+
+        liz = xbmcgui.ListItem(show_name, offscreen=True)
         url = str(show['tvdb_id'])
         is_folder = True
         items.append((url, liz, is_folder))
