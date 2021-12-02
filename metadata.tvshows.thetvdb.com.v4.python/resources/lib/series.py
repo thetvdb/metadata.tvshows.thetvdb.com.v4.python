@@ -1,3 +1,5 @@
+from pprint import pformat
+
 import xbmcgui
 import xbmcplugin
 
@@ -45,19 +47,11 @@ def get_series_details(id, settings, handle):
     # get the details of the found series
     logger.debug(f'Find info of tvshow with id {id}')
     tvdb_client = tvdb.Client(settings)
-
     show = tvdb_client.get_series_details_api(id, settings)
     if not show:
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
-
-    year_str = show.get("firstAired", "")
-    logger.debug("series year_str outside conditional")
-    logger.debug(year_str)
-    year = None
-    if year_str:
-        year = int(year_str.split("-")[0])
     details = {'title': show["name"],
                 'tvshowtitle': show["name"],
                 'plot': show["overview"],
@@ -65,33 +59,31 @@ def get_series_details(id, settings, handle):
                 'episodeguide': show["id"],
                 'mediatype': 'tvshow',
                 }
-    if year:
-        logger.debug("series year_str")
-        logger.debug(year_str)
+    name = show["name"]
+    year_str = show.get("firstAired") or ''
+    if year_str:
+        year = int(year_str.split("-")[0])
+        logger.debug(f"series year_str: {year_str}")
         details["premiered"] = year_str
+        details['year'] = year
+        name = f'{name} ({year})'
     studio = get_studio(show)
     if studio:
         details["studio"] = studio
     genres = get_genres(show)
     details["genre"] = genres
-
     country = show.get("originalCountry", None)
     if country:
         details["country"] = country
     status = show.get('status')
     if status:
         details['status'] = status['name']
-    name = show["name"]
-    if year:
-        name = f'{name} ({year})'
     liz = xbmcgui.ListItem(name, offscreen=True)
-
-    logger.debug("series details", details)
+    logger.debug(f"series details: {pformat(details)}")
     liz.setInfo('video', details)
     set_cast(liz, show)
     unique_ids = get_unique_ids(show)
     liz.setUniqueIDs(unique_ids, 'tvdb')
-
     language = tvdb.get_language(settings)
     add_artworks(show, liz, language)
     xbmcplugin.setResolvedUrl(
