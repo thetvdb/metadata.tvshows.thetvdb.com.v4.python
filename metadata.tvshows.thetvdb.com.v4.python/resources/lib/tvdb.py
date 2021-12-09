@@ -498,17 +498,18 @@ class Client(object):
 
 def get_artworks_from_show(show: dict, language: str = 'eng'):
 
-    def filter_by_language(item):
-        item_language = item.get('language')
-        return item_language in (language, 'eng') or item_language is None
-
     def sorter(item):
         item_language = item.get('language')
-        score = item.get('score', 0)
-        return item_language == language, score
+        score = item.get('score') or 0
+        if item_language == language:
+            return 3, score
+        if item_language is None:
+            return 2, score
+        if item_language == 'eng':
+            return 1, score
+        return 0, score
 
     artworks = show.get("artworks", [{}])
-    artworks = filter(filter_by_language, artworks)
     banners = []
     posters = []
     fanarts = []
