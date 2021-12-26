@@ -36,6 +36,8 @@ def get_show_id_from_nfo(nfo, settings, plugin_handle):
     :param nfo: the contents of a NFO file
     """
     logger.debug(f'Parsing NFO file:\n{nfo}')
+    if '<episodedetails>' in nfo:
+        return  # skip episode NFOs
     parse_result = _parse_nfo_url(nfo)
     if parse_result is not None:
         list_item = xbmcgui.ListItem(offscreen=True)
