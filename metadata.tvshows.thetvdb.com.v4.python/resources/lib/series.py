@@ -13,6 +13,8 @@ SUPPORTED_REMOTE_IDS = {
     'TheMovieDB.com': 'tmdb',
 }
 
+ARTWORK_URL_PREFIX = 'https://artworks.thetvdb.com'
+
 
 def search_series(title, settings, handle, year=None) -> None:
     # add the found shows to the list
@@ -93,7 +95,7 @@ def get_series_details(id, settings, handle):
     liz = xbmcgui.ListItem(name, offscreen=True)
     logger.debug(f"series details: {pformat(details)}")
     liz.setInfo('video', details)
-    set_cast(liz, show)
+    liz = set_cast(liz, show)
     unique_ids = get_unique_ids(show)
     liz.setUniqueIDs(unique_ids, 'tvdb')
     language = tvdb.get_language(settings)
@@ -106,18 +108,21 @@ def get_series_details(id, settings, handle):
 
 def set_cast(liz, show):
     cast = []
-    for char in show["characters"]:
+    characters = show.get('characters') or ()
+    for char in characters:
         if char["peopleType"] == "Actor":
             data = {
                 'name': char['personName'],
                 'role': char['name'],
             }
-            thumbnail = char.get('image')
+            thumbnail = char.get('image') or char.get('personImgURL')
             if thumbnail:
+                if not thumbnail.startswith(ARTWORK_URL_PREFIX):
+                    thumbnail = ARTWORK_URL_PREFIX + thumbnail
                 data['thumbnail'] = thumbnail
             cast.append(data)
     liz.setCast(cast)
-    return
+    return liz
 
 
 def get_genres(show):
