@@ -40,8 +40,9 @@ def get_show_id_from_nfo(nfo, settings, plugin_handle):
         return  # skip episode NFOs
     parse_result = _parse_nfo_url(nfo)
     if parse_result is not None:
-        list_item = xbmcgui.ListItem(offscreen=True)
         if parse_result.provider in ('tvdb', 'thetvdb'):
+            list_item = xbmcgui.ListItem(offscreen=True)
+            list_item.setUniqueIDs({'tvdb': parse_result.show_id}, 'tvdb')
             xbmcplugin.addDirectoryItem(
                 handle=plugin_handle,
                 url=parse_result.show_id,
