@@ -6,7 +6,7 @@ import xbmcplugin
 from . import tvdb
 from .nfo import parse_episode_guide_url
 from .utils import logger
-from .series import get_unique_ids
+from .series import get_unique_ids, ARTWORK_URL_PREFIX
 
 
 # add the episodes of a series to the list
@@ -116,10 +116,13 @@ def get_episode_cast(ep):
             elif char['peopleType'] == 'Director':
                 cast['writers'].append(char['personName'])
             elif char['peopleType'] == 'Guest Star':
-                cast['guest_stars'].append({
-                    'name': char['personName'],
-                    'thumbnail': char.get('image') or '',
-                })
+                person_info = {'name': char.get('personName') or ''}
+                thumbnail = char.get('image') or char.get('personImgURL') or ''
+                if thumbnail and not thumbnail.startswith(ARTWORK_URL_PREFIX):
+                    thumbnail = ARTWORK_URL_PREFIX + thumbnail
+                if thumbnail:
+                    person_info['thumbnail'] = thumbnail
+                cast['guest_stars'].append(person_info)
     return cast
 
 
