@@ -70,6 +70,7 @@ def get_episode_details(id, settings, handle):
     cast = get_episode_cast(ep)
     rating = get_rating(ep)
     tags = get_tags(ep)
+    duration_minutes = ep.get('runtime') or 0
 
     details = {
         'title': ep["name"],
@@ -81,6 +82,7 @@ def get_episode_details(id, settings, handle):
         'director': cast["directors"],
         'writer': cast["writers"],
         'mpaa': rating,
+        'duration': duration_minutes * 60,
     }
 
     if tags:
