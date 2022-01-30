@@ -29,6 +29,10 @@ class logger:
         for message in messages:
             logger.log(message, xbmc.LOGDEBUG)
 
+    @staticmethod
+    def warning(message):
+        logger.log(message, xbmc.LOGWARNING)
+
 
 def create_uuid():
     return str(uuid.uuid4())

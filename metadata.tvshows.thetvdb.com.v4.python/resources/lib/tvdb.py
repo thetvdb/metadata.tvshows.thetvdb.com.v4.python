@@ -431,18 +431,24 @@ class TVDB:
         language = get_language(settings)
         try:
             translation = self.get_series_translation(id, language)
-        except requests.HTTPError:
-            translation = self.get_series_translation(id, "eng")
+        except requests.HTTPError as exc:
+            logger.warning(f'{language} translation is not available: {exc}')
+            translation = {}
         overview = translation.get("overview") or ''
         name = translation.get("name") or ''
-        if not (overview and name) and translation.get('language') != 'eng':
-            english_info = self.get_series_translation(id, 'eng')
+        if not (overview or name) and translation.get('language') != 'eng':
+            try:
+                english_info = self.get_series_translation(id, 'eng')
+            except requests.HTTPError as exc:
+                logger.warning(f'eng info is not available: {exc}')
+                english_info = {}
             if not overview:
                 overview = english_info.get('overview') or ''
             if not name:
                 name = english_info.get('name') or ''
+        if name:
+            series["name"] = name
         series["overview"] = overview
-        series["name"] = name
         return series
 
     def get_series_episodes_api(self, id, settings):
