@@ -20,6 +20,13 @@ class ArtworkType(enum.IntEnum):
     CLEARLOGO = 23
 
 
+class SeasonType(enum.IntEnum):
+    DEFAULT = 1
+    ABSOLUTE = 2
+    DVD = 3
+    ALTERNATE = 4
+
+
 class Auth:
     logger.debug("logging in")
 
@@ -215,11 +222,7 @@ class Url:
         return url
 
     def series_season_episodes_url(self, id: int, season_type_number: int = 1, page: int = 0):
-        season_type = "default"
-        if season_type_number == 2:
-            season_type = "absolute"
-        if season_type_number == 3:
-            season_type = "dvd"
+        season_type = SeasonType(season_type_number).name.lower()
         url = "{}/series/{}/episodes/{}?page={}".format(
             self.base_url, id, season_type, page)
         return url
@@ -453,7 +456,11 @@ class TVDB:
 
     def get_series_episodes_api(self, id, settings):
         season_type = get_season_type(settings)
-        return self.get_series_season_episodes(id, season_type)
+        result = self.get_series_season_episodes(id, season_type)
+        if not result:
+            season_type_name = SeasonType(season_type).name.lower()
+            logger.warning(f'No episodes returned for show {id}, season type "{season_type_name}"')
+        return result
 
     def get_episode_details_api(self, id, settings):
         ep = self.get_episode_extended(id)
