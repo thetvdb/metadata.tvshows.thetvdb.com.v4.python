@@ -37,8 +37,8 @@ msgid "DVD"
 msgstr "DVD"
 
 msgctxt "#30005"
-msgid "Alternate (Requires PIN)"
-msgstr "Alternatif (Nécessite un PIN)"
+msgid "Alternate"
+msgstr "Alternatif"
 
 msgctxt "#30006"
 msgid "Gender"
