@@ -16,6 +16,8 @@ jobs:
         run: |
           sed -i s/%apikey%/${{ secrets.API_KEY }}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
           sed -i s/%apikey_with_pin%/${{ secrets.API_KEY_WITH_PIN}}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
+          git config user.email "thetvdb@thetvdb.com"
+          git config user.name "tvdb-kodi-ci"
           git add metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
           git commit -m "Insert API keys"
 
