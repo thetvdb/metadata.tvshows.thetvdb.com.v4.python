@@ -16,7 +16,8 @@ jobs:
         run: |
           sed -i s/%apikey%/${{ secrets.API_KEY }}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
           sed -i s/%apikey_with_pin%/${{ secrets.API_KEY_WITH_PIN}}/ metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
-          cat metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
+          git add metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
+          git commit -m "Insert API keys"
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
@@ -31,14 +32,14 @@ jobs:
         run: |
           kodi-addon-checker --branch matrix
 
-#      - name: Install addon submitter
-#        run: |
-#          pip install -q git+https://github.com/xbmc/kodi-addon-submitter.git
-#
-#      - name: Submit addon
-#        run: |
-#          submit-addon -r repo-scrapers -b matrix -s --pull-request metadata.tvshows.thetvdb.com.v4.python
-#        env:
-#          GH_USERNAME: tvdb-kodi-ci
-#          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-#          EMAIL: thetvdb@thetvdb.com
+      - name: Install addon submitter
+        run: |
+          pip install -q git+https://github.com/xbmc/kodi-addon-submitter.git
+
+      - name: Submit addon
+        run: |
+          submit-addon -r repo-scrapers -b matrix -s --pull-request metadata.tvshows.thetvdb.com.v4.python
+        env:
+          GH_USERNAME: tvdb-kodi-ci
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          EMAIL: thetvdb@thetvdb.com
