@@ -465,12 +465,25 @@ class TVDB:
         return result
 
     def get_episode_details_api(self, id, settings):
-        ep = self.get_episode_extended(id)
-        language = get_language(settings)
         try:
-            trans = self.get_episode_translation(id, language)
-        except requests.HTTPError:
-            trans = self.get_episode_translation(id, "eng")
+            ep = self.get_episode_extended(id)
+        except requests.HTTPError as e:
+            logger.warning(f'No episode found with id={id}. [error: {e}]')
+            return None
+
+        trans = None
+
+        language_attempties = list( dict.fromkeys([get_language(settings), "eng"]) )
+        for language in language_attempties:
+            try:
+                trans = self.get_episode_translation(id, language)
+                break
+            except requests.HTTPError as e:
+                logger.warning(f'No episode found with id={id} and language={language}. [error: {e}]')
+
+        if not trans:
+            return None
+
         overview = trans.get("overview") or ''
         name = trans.get("name") or ''
         if not (overview and name) and trans['language'] != 'eng':
