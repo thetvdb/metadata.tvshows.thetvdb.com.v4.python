@@ -473,8 +473,8 @@ class TVDB:
 
         trans = None
 
-        language_attempties = list( dict.fromkeys([get_language(settings), "eng"]) )
-        for language in language_attempties:
+        for language in { get_language(settings), "eng" }:
+            # retries with "eng", as fallback
             try:
                 trans = self.get_episode_translation(id, language)
                 break
