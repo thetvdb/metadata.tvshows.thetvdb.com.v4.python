@@ -3,6 +3,10 @@ import json
 import sys
 import urllib
 
+import importlib.machinery
+loader = importlib.machinery.SourceFileLoader('resources', './metadata.tvshows.thetvdb.com.v4.python/resources/__init__.py')
+resources = loader.load_module()
+
 from resources.lib import tvdb, simple_requests
 
 class TestEpisodesApi(unittest.TestCase):
