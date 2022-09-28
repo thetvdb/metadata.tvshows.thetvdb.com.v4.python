@@ -488,16 +488,27 @@ class TVDB:
                     f'No episode found with id={id} and language={language}. [error: {e}]')
 
         if not trans:
+            #???: When there isn't translations for the content, including for the eng fallback,
+            # shouldn't this function return the content with its original metadata?
+            # If yes, we need to change the line below to 'return ep'
             return None
 
+        # Fills 'name' or 'overview' with english information, if not found for the primary language
         overview = trans.get("overview") or ''
         name = trans.get("name") or ''
-        if not (overview and name) and trans['language'] != 'eng':
-            english_info = self.get_episode_translation(id, 'eng')
-            if not overview:
-                overview = english_info.get('overview') or ''
-            if not name:
-                name = english_info.get('name') or ''
+        if trans['language'] != 'eng' and not (overview and name):
+            logger.warning(
+                f"Name or overview are unknown for the episode id={id}. Trying to get it from default (English) translation")
+            try:
+                english_info = self.get_episode_translation(id, 'eng')
+                if not overview:
+                    overview = english_info.get("overview") or ''
+                if not name:
+                    name = english_info.get("name") or ''
+            except requests.HTTPError as e:
+                logger.warning(
+                    f"No success on filling the 'name' and 'overview' metadata with english info: {e}")
+
         ep["overview"] = overview
         ep["name"] = name
         return ep
