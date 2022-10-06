@@ -8,7 +8,7 @@ import importlib.machinery
 loader = importlib.machinery.SourceFileLoader('resources', './metadata.tvshows.thetvdb.com.v4.python/resources/__init__.py')
 resources = loader.load_module()
 
-from resources.lib import tvdb, simple_requests
+from resources.lib import tvdb
 
 DEFAULT_SETTINGS = {
     'gender': 'Other', 
@@ -58,6 +58,7 @@ class TestEpisodesApi(unittest.TestCase):
         self.assertEqual(273716, ep['seriesId'])
         self.assertEqual('Der Zirkus-Check', ep['name'], 'Episode title does not match.')
 
+
     def test_get_episode_details_api_fails_gracefully(self):
         """Expects None is returned. No unhandled exceptions are expected."""
         ep = self.tvdb.get_episode_details_api(id=9999999999999, settings=DEFAULT_SETTINGS)
@@ -66,6 +67,7 @@ class TestEpisodesApi(unittest.TestCase):
 class TestSeriesApi(unittest.TestCase):
     def setUp(self):
         self.tvdb = tvdb.Client(DEFAULT_SETTINGS)
+
 
     def test_get_series_details_api_successfull_no_english_translation(self):
         series_info = self.tvdb.get_series_details_api(id=273716, settings=DEFAULT_SETTINGS)
@@ -84,6 +86,7 @@ class TestSeriesApi(unittest.TestCase):
         self.assertEqual('Checker Tobi', series_info['name'], 'Episode title does not match.')
         self.assertTrue( series_info['overview'].startswith('Spin-off von Checker Can.') )
         self.assertTrue(len(series_info['seasons']) > 0)
+
 
 if __name__ == '__main__':
     unittest.main()
