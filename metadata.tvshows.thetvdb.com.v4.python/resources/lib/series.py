@@ -2,6 +2,7 @@ from pprint import pformat
 
 import xbmcgui
 import xbmcplugin
+import json
 
 from . import tvdb
 from .artwork import add_artworks
@@ -70,11 +71,13 @@ def get_series_details(id, settings, handle):
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
+
+    showId = {'tvdb': show["id"]}
     details = {'title': show["name"],
                 'tvshowtitle': show["name"],
                 'plot': show["overview"],
                 'plotoutline': show["overview"],
-                'episodeguide': show["id"],
+                'episodeguide': json.dumps(showId),
                 'mediatype': 'tvshow',
                 }
     name = show["name"]

@@ -28,7 +28,7 @@ def get_series_episodes(show_ids, settings, handle):
     if not show_id:
         raise RuntimeError(
             'No tvdb show id found in episode guide, this show should be refreshed or rescraped')
-    elif not show_id.isdigit():
+    elif not str(show_id).isdigit():
         # Kodi has a bug: when a show directory contains an XML NFO file with
         # episodeguide URL, that URL is always passed here regardless of
         # the actual parsing result in get_show_id_from_nfo()
@@ -41,12 +41,13 @@ def get_series_episodes(show_ids, settings, handle):
             logger.debug(f'Changed show id to {show_id}')
 
     client = tvdb.Client(settings)
-    episodes = client.get_series_episodes_api(id, settings)
+    episodes = client.get_series_episodes_api(show_id, settings)
 
     if not episodes:
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
+
     for ep in episodes:
         liz = xbmcgui.ListItem(ep['name'], offscreen=True)
         details = {
