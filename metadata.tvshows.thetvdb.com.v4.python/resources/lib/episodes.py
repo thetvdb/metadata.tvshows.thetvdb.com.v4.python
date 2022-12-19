@@ -1,5 +1,4 @@
 from collections import defaultdict
-from collections import defaultdict
 
 import xbmcgui
 import xbmcplugin
