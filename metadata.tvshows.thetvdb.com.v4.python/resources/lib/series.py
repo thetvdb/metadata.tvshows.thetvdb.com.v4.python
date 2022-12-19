@@ -72,7 +72,13 @@ def get_series_details(id, settings, handle):
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
 
-    showId = {'tvdb': show["id"]}
+    showId = {'tvdb': str(show["id"])}
+    for remoteId in show.get('remoteIds'):
+        if remoteId.get('sourceName') == "IMDB":
+            showId['imdb'] = remoteId.get('id')
+        if remoteId.get('sourceName') == "TheMovieDB.com":
+            showId['tmdb'] = remoteId.get('id')
+    
     details = {'title': show["name"],
                 'tvshowtitle': show["name"],
                 'plot': show["overview"],
