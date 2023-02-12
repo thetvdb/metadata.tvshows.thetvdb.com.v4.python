@@ -169,7 +169,7 @@ class Url:
     def season_url(self, id, extended=False):
         url = "{}/seasons/{}".format(self.base_url, id)
         if extended:
-            url = "{}/extended".format(url)
+            url = "{}/extended?meta=episodes".format(url)
         return url
 
     def episode_url(self, id, extended=False):
@@ -424,6 +424,19 @@ class TVDB:
         episodes = []
         while True:
             url = self.url.series_season_episodes_url(id, season_type, page)
+            res = self.request.make_api_request(url).get("episodes", [])
+            page += 1
+            if not res:
+                break
+            episodes.extend(res)
+        return episodes
+
+    def get_series_season_episodes_by_season_number(self, id: int, season_number: int = 0, settings=None):
+        season_type = get_season_type(settings)
+        page = 0
+        episodes = []
+        while True:
+            url = self.url.series_season_episodes_url(id, season_type, page) + "&season={}".format(season_number)
             res = self.request.make_api_request(url).get("episodes", [])
             page += 1
             if not res:

@@ -142,3 +142,5 @@ cython_debug/
 .idea/
 .vscode/
 *.zip
+build.txt
+.DS_Store

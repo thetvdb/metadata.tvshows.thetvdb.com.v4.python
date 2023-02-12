@@ -100,20 +100,19 @@ def get_episode_details(id, settings, handle):
     }
 
     if ep.get("airsAfterSeason"):
-        details['sortseason'] = ep.get("airsAfterSeason") + 1
-        details['sortepisode'] = 0
+        episodes = client.get_series_season_episodes_by_season_number(ep.get('seriesId'), ep.get("airsAfterSeason"), settings)
+        details['sortseason'] = ep.get("airsBeforeSeason")
+        result = max(episodes, key=lambda x: x["number"])
+        details['sortepisode'] = result.get('number') + 1
     if ep.get("airsBeforeSeason"):
         details['sortseason'] = ep.get("airsBeforeSeason")
         details['sortepisode'] = 0
     if ep.get("airsBeforeEpisode"):
         details['sortepisode'] = ep.get("airsBeforeEpisode")
-
     if tags:
         details["tag"] = tags
 
-    logger.debug("details in get episode details")
-    logger.debug(details)
-    logger.debug(ep)
+
     liz.setInfo('video', details)
 
     unique_ids = get_unique_ids(ep)
