@@ -121,6 +121,6 @@
       <screenshot>media/screenshot-2.jpg</screenshot>
       <screenshot>media/screenshot-3.jpg</screenshot>
     </assets>
-    <news>- 1.1.5: Fix airs before season error and turn on reuselanguageinvoker</news>
+    <news>- 1.1.5: Fix airs after season error and turn on reuselanguageinvoker</news>
   </extension>
 </addon>
