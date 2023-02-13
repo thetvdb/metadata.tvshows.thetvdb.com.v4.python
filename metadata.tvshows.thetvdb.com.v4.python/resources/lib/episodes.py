@@ -100,10 +100,8 @@ def get_episode_details(id, settings, handle):
     }
 
     if ep.get("airsAfterSeason"):
-        episodes = client.get_series_season_episodes_by_season_number(ep.get('seriesId'), ep.get("airsAfterSeason"), settings)
-        details['sortseason'] = ep.get("airsBeforeSeason")
-        result = max(episodes, key=lambda x: x["number"])
-        details['sortepisode'] = result.get('number') + 1
+        details['sortseason'] = ep.get("airsAfterSeason")    
+        details['sortepisode'] = 4096
     if ep.get("airsBeforeSeason"):
         details['sortseason'] = ep.get("airsBeforeSeason")
         details['sortepisode'] = 0

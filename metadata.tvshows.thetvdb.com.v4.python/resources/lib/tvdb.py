@@ -431,19 +431,6 @@ class TVDB:
             episodes.extend(res)
         return episodes
 
-    def get_series_season_episodes_by_season_number(self, id: int, season_number: int = 0, settings=None):
-        season_type = get_season_type(settings)
-        page = 0
-        episodes = []
-        while True:
-            url = self.url.series_season_episodes_url(id, season_type, page) + "&season={}".format(season_number)
-            res = self.request.make_api_request(url).get("episodes", [])
-            page += 1
-            if not res:
-                break
-            episodes.extend(res)
-        return episodes
-
     def get_series_details_api(self, id, settings=None) -> dict:
         settings = settings or {}
         series = self.get_series_extended(id)
