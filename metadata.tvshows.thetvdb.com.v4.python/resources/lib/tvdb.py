@@ -28,6 +28,7 @@ class SeasonType(enum.IntEnum):
     ALTERNATE = 4
     REGIONAL = 5
     ALTDVD = 6
+    OFFICIAL = 7
 
 
 class Auth:
