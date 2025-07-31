@@ -7,7 +7,7 @@ import json
 from . import tvdb
 from .artwork import add_artworks
 from .tvdb import get_language
-from .utils import logger
+from .utils import logger, UniqueId, UniqueIdType
 
 SUPPORTED_REMOTE_IDS = {
     'IMDB': 'imdb',
@@ -27,7 +27,8 @@ def search_series(title, settings, handle, year=None) -> None:
     else:
         search_results = tvdb_client.search(title, year=year, type="series", limit=10)
         if not search_results:
-            logger.debug(f"No results found for '{title}' where year='{year}'. Falling back to search without year criteria.")
+            logger.debug(
+                f"No results found for '{title}' where year='{year}'. Falling back to search without year criteria.")
             search_results = tvdb_client.search(title, type="series", limit=10)
 
     logger.debug(f'Search results {search_results}')
@@ -51,7 +52,7 @@ def search_series(title, settings, handle, year=None) -> None:
             show_name += f' ({year})'
 
         liz = xbmcgui.ListItem(show_name, offscreen=True)
-        url = str(show['tvdb_id'])
+        url = str(UniqueId(UniqueIdType.SERIES, str(show['tvdb_id'])))
         is_folder = True
         items.append((url, liz, is_folder))
 
@@ -62,30 +63,23 @@ def search_series(title, settings, handle, year=None) -> None:
     )
 
 
-def get_series_details(id, settings, handle):
-    # get the details of the found series
-    logger.debug(f'Find info of tvshow with id {id}')
-    tvdb_client = tvdb.Client(settings)
-    show = tvdb_client.get_series_details_api(id, settings)
+def get_series_details(id, settings, handle, unique_ids):
+    show = tvdb.get_series_details_via_unique_ids(id, settings, unique_ids)
     if not show:
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
 
-    showId = {'tvdb': str(show["id"])}
-    for remoteId in show.get('remoteIds'):
-        if remoteId.get('sourceName') == "IMDB":
-            showId['imdb'] = remoteId.get('id')
-        if remoteId.get('sourceName') == "TheMovieDB.com":
-            showId['tmdb'] = remoteId.get('id')
-    
+    unique_ids = get_unique_ids(show)
+
     details = {'title': show["name"],
-                'tvshowtitle': show["name"],
-                'plot': show["overview"],
-                'plotoutline': show["overview"],
-                'episodeguide': json.dumps(showId),
-                'mediatype': 'tvshow',
-                }
+               'tvshowtitle': show["name"],
+               'plot': show["overview"],
+               'plotoutline': show["overview"],
+               'episodeguide': json.dumps(unique_ids),
+               'mediatype': 'tvshow',
+               }
+
     name = show["name"]
     year_str = show.get("firstAired") or ''
     if year_str:
@@ -109,13 +103,12 @@ def get_series_details(id, settings, handle):
     logger.debug(f"series details: {pformat(details)}")
     liz.setInfo('video', details)
     liz = set_cast(liz, show)
-    unique_ids = get_unique_ids(show)
     liz.setUniqueIDs(unique_ids, 'tvdb')
     language = tvdb.get_language(settings)
     add_artworks(show, liz, language)
     xbmcplugin.setResolvedUrl(
-        handle=handle, 
-        succeeded=True, 
+        handle=handle,
+        succeeded=True,
         listitem=liz)
 
 
@@ -165,7 +158,8 @@ def get_tags(show):
 
 
 def get_unique_ids(show):
-    unique_ids = {'tvdb': show['id']}
+    unique_ids = {'tvdb': str(show["uniqueId"])}
+
     remote_ids = show.get('remoteIds')
     if remote_ids:
         for remote_id_info in remote_ids:
