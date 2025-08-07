@@ -75,3 +75,7 @@ msgstr "Alternate DVD"
 msgctxt "#30014"
 msgid "Aired Order"
 msgstr "Aired Order"
+
+msgctxt "#30015"
+msgid "Maximum Number of Images per Season"
+msgstr "Maximum Number of Images per Season"
