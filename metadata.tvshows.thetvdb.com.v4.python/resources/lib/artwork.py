@@ -2,11 +2,12 @@ import xbmcgui
 import xbmcplugin
 
 from .tvdb import Client, get_artworks_from_show, get_language
+from collections import defaultdict
 
 MAX_IMAGES_NUMBER = 10
 
 
-def add_artworks(show, liz, language):
+def add_artworks(show, liz, language, max_season_images_number):
     
     artworks = get_artworks_from_show(show, language)
     fanarts = artworks.pop("fanarts")
@@ -16,8 +17,13 @@ def add_artworks(show, liz, language):
         for image in images[:MAX_IMAGES_NUMBER]:
             liz.addAvailableArtwork(image['image'], art_type)
 
+    season_posters_dict = defaultdict(list)
     for image, season_number in season_posters:
-        liz.addAvailableArtwork(image, 'poster', season=season_number)
+        season_posters_dict.setdefault(season_number, []).append(image)
+
+    for season_number, images in season_posters_dict.items():
+        for image in images[:max_season_images_number]:
+            liz.addAvailableArtwork(image, 'poster', season=season_number)
 
     fanart_items = []
     for fanart in fanarts[:MAX_IMAGES_NUMBER]:
@@ -36,5 +42,6 @@ def get_artworks(id, settings, handle):
         return
     liz = xbmcgui.ListItem(id, offscreen=True)
     language = get_language(settings)
-    add_artworks(show, liz, language)
+    max_season_images = int(settings.get("max_season_images"))
+    add_artworks(show, liz, language, max_season_images)
     xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=liz)
