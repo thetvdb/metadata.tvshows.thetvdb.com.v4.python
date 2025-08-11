@@ -1,9 +1,9 @@
 import enum
 import urllib.parse
 
-from resources.lib import simple_requests as requests
-from resources.lib.constants import LANGUAGES_MAP
-from resources.lib.utils import logger, ADDON
+from . import simple_requests as requests
+from .constants import LANGUAGES_MAP
+from .utils import logger, ADDON, parse_unique_id, UniqueIdType
 
 apikey = "%apikey%"
 apikey_with_pin = "%apikey_with_pin%"
@@ -230,6 +230,11 @@ class Url:
         season_type = SeasonType(season_type_number).name.lower()
         url = "{}/series/{}/episodes/{}?page={}".format(
             self.base_url, id, season_type, page)
+        return url
+
+    def season_translation_url(self, id: int, language="eng"):
+        url = "{}/seasons/{}/translations/{}".format(
+            self.base_url, id, language)
         return url
 
 
@@ -487,7 +492,7 @@ class TVDB:
             except requests.HTTPError as e:
                 logger.warning(
                     f'No episode found with id={id} and language={language}. [error: {e}]')
-        
+
         if not trans:
             return None
 
@@ -506,6 +511,58 @@ class TVDB:
         ep["overview"] = overview
         ep["name"] = name
         return ep
+
+    def get_season_translation(self, id: int, lang: str) -> dict:
+        """Returns a season translation dictionary"""
+        url = self.url.season_translation_url(id, lang)
+        return self.request.make_api_request(url)
+
+    def get_season_details_api(self, id, settings=None) -> dict:
+        settings = settings or {}
+        season = self.get_season_extended(id)
+
+        # not all seasons have names, only load translation if there is an untranslated name
+        if "name" in season:
+            language = get_language(settings)
+            try:
+                logger.debug(f'loading translation {language} of season {id}')
+                translation = self.get_season_translation(id, language)
+            except requests.HTTPError as exc:
+                logger.warning(f'{language} translation is not available: {exc}')
+                translation = {}
+            overview = translation.get("overview") or ''
+            name = translation.get("name") or ''
+            if not (overview or name) and translation.get('language') != 'eng':
+                try:
+                    logger.debug(f'loading fallback translation eng of season {id}')
+                    english_info = self.get_season_translation(id, 'eng')
+                except requests.HTTPError as exc:
+                    logger.warning(f'eng info is not available: {exc}')
+                    english_info = {}
+                if not overview:
+                    overview = english_info.get('overview') or ''
+                if not name:
+                    name = english_info.get('name') or ''
+            if name:
+                season["name"] = name
+
+            season["overview"] = overview
+
+        return season
+
+    def get_season_episodes_api(self, id, settings):
+        season = self.get_season_details_api(id, settings)
+
+        if not season or 'episodes' not in season:
+            logger.warning(
+                f'No episodes returned for season {id}"')
+            return []
+        else:
+            episodes = season['episodes']
+            for episode in episodes:
+                episode['seasonNumber'] = 1
+            return episodes
+
 
 
 def get_language(path_settings):
@@ -537,7 +594,6 @@ class Client(object):
 
 
 def get_artworks_from_show(show: dict, language: str = 'eng'):
-
     def sorter(item):
         item_language = item.get('language')
         score = item.get('score') or 0
@@ -576,7 +632,7 @@ def get_artworks_from_show(show: dict, language: str = 'eng'):
             season_id = art.get("seasonId", -1)
             season = next((season for season in seasons if season.get("id", -2) == season_id), None)
             if season:
-                season_posters.append( (art.get("image", ""), season.get("number", 0) ) )
+                season_posters.append((art.get("image", ""), season.get("number", 0)))
 
     banners.sort(key=sorter, reverse=True)
     posters.sort(key=sorter, reverse=True)
@@ -592,3 +648,84 @@ def get_artworks_from_show(show: dict, language: str = 'eng'):
         'season_posters': season_posters,
     }
     return artwork_dict
+
+
+# Updates the given series with information from the season
+# to make it an own distinct series/show specific to the season
+def fill_season_into_series(series, season):
+    series["season"] = season
+
+    # Construct Name
+    if "name" in season:
+        # Series Name - Season Name
+        series["name"] = f'{series.get("name")} - {season.get("name")}'
+    elif "number" in season and int(season.get("number")) != 1:
+        series["number"] = season.get("number")
+        # Series Name - Season Number
+        series["name"] = f'{series.get("name")} - S{season.get("number"):02d}'
+
+    # Overwrite Details if available on season level
+
+    if "overview" in season:
+        series["overview"] = season["overview"]
+
+    if "image" in season:
+        series["image"] = season["image"]
+        series["imageType"] = season["imageType"]
+
+    if "year" in season:
+        series["year"] = season["year"]
+        series["firstAired"] = f'{season.get("year")}-01-01'
+
+    if "lastUpdated" in season:
+        series["lastUpdated"] = season["lastUpdated"]
+
+    if "artwork" in season:
+        artworks = []
+        for art in series["artworks"]:
+            if art.get("type") != ArtworkType.POSTER and art.get("type") != ArtworkType.SEASONPOSTER:
+                artworks.append(art)
+
+        for art in season["artwork"]:
+            copy = art.copy()
+            if copy.get("type") == ArtworkType.SEASONPOSTER:
+                copy["type"] = ArtworkType.POSTER
+            artworks.append(copy)
+
+        series["artworks"] = artworks
+
+# loads a series from the API using the provided IDs
+# depending on the unique_ids specified in Kodi, this can be also a specific Season of a series
+# see https://github.com/thetvdb/metadata.tvshows.thetvdb.com.v4.python/issues/48 for details
+def get_series_details_via_unique_ids(id, settings, unique_ids):
+    _unique_id = unique_ids.get('tvdb') or id
+
+    logger.debug(f'Attempt loading series with id {id} and unique_id {_unique_id}')
+    unique_id = parse_unique_id(_unique_id)
+    if not unique_id:
+        logger.debug(f'Invalid id {_unique_id}')
+        return None
+
+    tvdb_client = Client(settings)
+    if unique_id.id_type == UniqueIdType.SERIES:
+        # default series loading: simply load the series by id
+        logger.debug(f'Loading series with id {unique_id.tvdb_id}')
+        series = tvdb_client.get_series_details_api(unique_id.tvdb_id, settings)
+    elif unique_id.id_type == UniqueIdType.SEASON:
+        # season as series: load season and construct an artificial series for the season
+        logger.debug(f'Loading season with id {unique_id.tvdb_id}')
+        season = tvdb_client.get_season_details_api(unique_id.tvdb_id, settings)
+        if not season:
+            return None
+
+        series_id = season.get('seriesId')
+        logger.debug(f'Loading series {series_id} of season {unique_id.tvdb_id}')
+        series = tvdb_client.get_series_details_api(series_id, settings)
+
+        fill_season_into_series(series, season)
+    else:
+        logger.debug(f'Invalid unique_id format {unique_id}')
+        return None
+
+    series["uniqueId"] = unique_id
+    return series
