@@ -248,6 +248,13 @@
 						<heading>30011</heading>
 					</control>
 				</setting>
+				<setting id="max_season_images" type="string" label="30015" help="">
+					<level>3</level>
+					<default>3</default>
+					<control type="edit" format="integer">
+						<heading>30015</heading>
+					</control>
+				</setting>
 			</group>
 		</category>
 	</section>

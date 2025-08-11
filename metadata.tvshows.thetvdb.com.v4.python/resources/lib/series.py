@@ -105,7 +105,8 @@ def get_series_details(id, settings, handle, unique_ids):
     liz = set_cast(liz, show)
     liz.setUniqueIDs(unique_ids, 'tvdb')
     language = tvdb.get_language(settings)
-    add_artworks(show, liz, language)
+    max_season_images = int(settings.get("max_season_images"))
+    add_artworks(show, liz, language, max_season_images)
     xbmcplugin.setResolvedUrl(
         handle=handle,
         succeeded=True,
