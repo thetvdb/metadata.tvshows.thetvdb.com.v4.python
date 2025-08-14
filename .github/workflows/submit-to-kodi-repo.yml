@@ -21,7 +21,7 @@ jobs:
           git add metadata.tvshows.thetvdb.com.v4.python/resources/lib/tvdb.py
           git commit -m "Insert API keys"
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
