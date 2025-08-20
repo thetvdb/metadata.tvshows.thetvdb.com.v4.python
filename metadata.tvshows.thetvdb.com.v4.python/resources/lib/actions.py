@@ -41,10 +41,12 @@ def run():
         if action == 'find' and title is not None:
             logger.debug("about to call search series")
             search_series(title, settings, handle, year)
-        elif action == 'getdetails' and 'url' in params:
+        elif action == 'getdetails' and ('url' in params or 'uniqueIDs' in params):
             logger.debug("about to call get series details")
+            _unique_ids = params.get("uniqueIDs", "{}")
+            unique_ids = json.loads(_unique_ids)
             get_series_details(
-                urllib.parse.unquote_plus(params["url"]), settings, handle)
+                urllib.parse.unquote_plus(params.get("url") or ''), settings, handle, unique_ids)
         elif action == 'getepisodelist' and 'url' in params:
             logger.debug("about to call get series episodes")
             get_series_episodes(
@@ -60,4 +62,6 @@ def run():
         elif params['action'].lower() == 'nfourl':
             logger.debug('performing nfourl action')
             get_show_id_from_nfo(params['nfo'], settings, handle)
+        else:
+            logger.warning(f"unhandled action {action}")
     xbmcplugin.endOfDirectory(handle)

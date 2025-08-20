@@ -6,7 +6,7 @@ import json
 
 from . import tvdb
 from .nfo import parse_episode_guide_url
-from .utils import logger
+from .utils import logger, parse_unique_id, UniqueIdType, UniqueId
 from .series import get_unique_ids, ARTWORK_URL_PREFIX
 
 
@@ -14,34 +14,45 @@ from .series import get_unique_ids, ARTWORK_URL_PREFIX
 
 
 def get_series_episodes(show_ids, settings, handle):
-    logger.debug(f'Find episodes of tvshow with id {id}')
+    logger.debug(f'Find episodes of tvshow with id {show_ids}')
     try:
         all_ids = json.loads(show_ids)
-        show_id = all_ids.get('tvdb')
-        if not show_id:
-            show_id = str(show_ids)
+        unique_id = all_ids.get('tvdb')
+        if not unique_id:
+            unique_id = str(show_ids)
+        unique_id = parse_unique_id(unique_id)
     except (ValueError, AttributeError):
-        show_id = str(show_ids)
-        if show_id.isdigit():
+        logger.warning('Loading episodes with unknown ID format, fallback')
+        unique_id = str(show_ids)
+        if unique_id.isdigit():
             logger.error(
                 'using deprecated episodeguide format, this show should be refreshed or rescraped')
-    if not show_id:
+            unique_id = UniqueId(UniqueIdType.SERIES, unique_id)
+
+    if not unique_id:
         raise RuntimeError(
             'No tvdb show id found in episode guide, this show should be refreshed or rescraped')
-    elif not str(show_id).isdigit():
+    elif unique_id is str:
         # Kodi has a bug: when a show directory contains an XML NFO file with
         # episodeguide URL, that URL is always passed here regardless of
         # the actual parsing result in get_show_id_from_nfo()
-        parse_result = parse_episode_guide_url(show_id)
+        parse_result = parse_episode_guide_url(unique_id)
         if not parse_result:
             return
 
-        if parse_result.provider == 'thetvdb':
-            show_id = parse_result.show_id
-            logger.debug(f'Changed show id to {show_id}')
+        unique_id = UniqueId(UniqueIdType.SERIES, parse_result.show_id)
+        logger.debug(f'Changed show id to {unique_id}')
 
     client = tvdb.Client(settings)
-    episodes = client.get_series_episodes_api(show_id, settings)
+
+    if unique_id.id_type == UniqueIdType.SERIES:
+        episodes = client.get_series_episodes_api(unique_id.tvdb_id, settings)
+    elif unique_id.id_type == UniqueIdType.SEASON:
+        episodes = client.get_season_episodes_api(unique_id.tvdb_id, settings)
+    else:
+        # Should not happen
+        logger.error(f'Unsupported id {unique_id}')
+        return
 
     if not episodes:
         xbmcplugin.setResolvedUrl(
@@ -66,7 +77,7 @@ def get_series_episodes(show_ids, settings, handle):
         liz.setInfo('video', details)
         xbmcplugin.addDirectoryItem(
             handle=handle, 
-            url=str(ep['id']),
+            url=str(UniqueId(UniqueIdType.EPISODE, ep['id'])),
             listitem=liz, 
             isFolder=True
             )
@@ -74,12 +85,20 @@ def get_series_episodes(show_ids, settings, handle):
 # get the details of the found episode
 def get_episode_details(id, settings, handle):
     logger.debug(f'Find info of episode with id {id}')
+
+    unique_id = parse_unique_id(id)
+    if not unique_id:
+        # backwards compatibility
+        unique_id = UniqueId(UniqueIdType.EPISODE, id)
+
     client = tvdb.Client(settings)
-    ep = client.get_episode_details_api(id, settings)
+    ep = client.get_episode_details_api(unique_id.tvdb_id, settings)
     if not ep:
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
         return
+    ep["uniqueId"] = unique_id
+
     liz = xbmcgui.ListItem(ep["name"], offscreen=True)
     cast = get_episode_cast(ep)
     rating = get_rating(ep)

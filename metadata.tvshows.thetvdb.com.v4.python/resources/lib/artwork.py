@@ -1,7 +1,8 @@
 import xbmcgui
 import xbmcplugin
 
-from .tvdb import Client, get_artworks_from_show, get_language
+from .tvdb import get_artworks_from_show, get_language, get_series_details_via_unique_ids
+from .utils import logger, parse_unique_id
 from collections import defaultdict
 
 MAX_IMAGES_NUMBER = 10
@@ -33,9 +34,15 @@ def add_artworks(show, liz, language, max_season_images_number):
 
 
 def get_artworks(id, settings, handle):
-    tvdb_client = Client(settings)
+    unique_id = parse_unique_id(id)
+    if not unique_id:
+        logger.error(f'Invalid id: {id}')
+        xbmcplugin.setResolvedUrl(
+            handle, False, xbmcgui.ListItem(offscreen=True))
+        return
 
-    show = tvdb_client.get_series_details_api(id, settings)
+    show = get_series_details_via_unique_ids(id, settings, {})
+
     if not show:
         xbmcplugin.setResolvedUrl(
             handle, False, xbmcgui.ListItem(offscreen=True))
